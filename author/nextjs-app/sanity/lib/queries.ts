@@ -103,6 +103,7 @@ const bookFields = /* groq */ `
   "status": select(_originalId in path("drafts.**") => "draft", "published"),
   "title": coalesce(title, "Untitled"),
   "slug": slug.current,
+  description,
   excerpt,
   coverImage,
   "publicationDate": publicationDate,
