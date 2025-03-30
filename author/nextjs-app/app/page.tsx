@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 
 import { AllPosts } from "@/app/components/Posts";
+import { AllBooks } from "./components/Books";
 
 
 export default async function Page() {
@@ -29,6 +30,13 @@ export default async function Page() {
 
             </div>
           </div>
+        </div>
+      </div>
+      <div className="border-t border-gray-10">
+        <div className="container">
+          <aside className="py-12 sm:py-20">
+            <Suspense>{await AllBooks()}</Suspense>
+          </aside>
         </div>
       </div>
       <div className="border-t border-gray-10">

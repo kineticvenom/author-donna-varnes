@@ -2,6 +2,7 @@ import { defineQuery } from "next-sanity";
 
 export const settingsQuery = defineQuery(`*[_type == "settings"][0]`);
 
+
 const postFields = /* groq */ `
   _id,
   "status": select(_originalId in path("drafts.**") => "draft", "published"),
@@ -93,5 +94,53 @@ export const postPagesSlugs = defineQuery(`
 
 export const pagesSlugs = defineQuery(`
   *[_type == "page" && defined(slug.current)]
+  {"slug": slug.current}
+`);
+
+
+const bookFields = /* groq */ `
+  _id,
+  "status": select(_originalId in path("drafts.**") => "draft", "published"),
+  "title": coalesce(title, "Untitled"),
+  "slug": slug.current,
+  excerpt,
+  coverImage,
+  "publicationDate": publicationDate,
+  isbn,
+  amazonLink,
+  "date": coalesce(date, _updatedAt),
+  "author": author->{
+    firstName,
+    lastName,
+    picture
+  }
+`;
+
+export const allBooksQuery = defineQuery(`
+  *[_type == "book" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc) {
+    ${bookFields}
+  }
+`);
+
+export const moreBooksQuery = defineQuery(`
+  *[_type == "book" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc) [0...$limit] {
+    ${bookFields}
+  }
+`);
+
+export const bookQuery = defineQuery(`
+  *[_type == "book" && slug.current == $slug][0] {
+    content[]{
+      ...,
+      markDefs[]{
+        ...
+      }
+    },
+    ${bookFields}
+  }
+`);
+
+export const bookPagesSlugs = defineQuery(`
+  *[_type == "book" && defined(slug.current)]
   {"slug": slug.current}
 `);

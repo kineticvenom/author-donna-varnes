@@ -34,7 +34,7 @@ export const book = defineType({
       defineField({
         name: 'description',
         title: 'Description',
-        type: 'blockContent',
+        type: 'text',
       }),
       defineField({
         name: 'excerpt',
