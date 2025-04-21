@@ -22,17 +22,16 @@ export default async function Page() {
               </h1>
             </div>
             <div className="mt-6 space-y-6 prose sm:prose-lg md:prose-xl lg:prose-2xl text-gray-700">
-              <p>
+              <p>"Whats this text"
 
               </p>
             </div>
-            <div className="flex items-center flex-col gap-4">
-
+            <div className="flex items-center flex-col gap-4"><p>"where</p>
             </div>
           </div>
         </div>
       </div>
-      <div className="border-t border-gray-10">
+      <div className="border-t border-gray-10 bg-color-grey">
         <div className="container">
           <aside className="py-12 sm:py-20">
             <Suspense>{await AllBooks()}</Suspense>

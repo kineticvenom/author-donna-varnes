@@ -748,12 +748,13 @@ export type PagesSlugsResult = Array<{
   slug: string | null;
 }>;
 // Variable: allBooksQuery
-// Query: *[_type == "book" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc) {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "publicationDate": publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),  "author": author->{    firstName,    lastName,    picture  }  }
+// Query: *[_type == "book" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc) {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  description,  excerpt,  coverImage,  "publicationDate": publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),  "author": author->{    firstName,    lastName,    picture  }  }
 export type AllBooksQueryResult = Array<{
   _id: string;
   status: "draft" | "published";
   title: string | "Untitled";
   slug: string | null;
+  description: string | null;
   excerpt: string | null;
   coverImage: {
     asset?: {
@@ -789,12 +790,13 @@ export type AllBooksQueryResult = Array<{
   } | null;
 }>;
 // Variable: moreBooksQuery
-// Query: *[_type == "book" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc) [0...$limit] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "publicationDate": publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),  "author": author->{    firstName,    lastName,    picture  }  }
+// Query: *[_type == "book" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc) [0...$limit] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  description,  excerpt,  coverImage,  "publicationDate": publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),  "author": author->{    firstName,    lastName,    picture  }  }
 export type MoreBooksQueryResult = Array<{
   _id: string;
   status: "draft" | "published";
   title: string | "Untitled";
   slug: string | null;
+  description: string | null;
   excerpt: string | null;
   coverImage: {
     asset?: {
@@ -830,13 +832,14 @@ export type MoreBooksQueryResult = Array<{
   } | null;
 }>;
 // Variable: bookQuery
-// Query: *[_type == "book" && slug.current == $slug][0] {    content[]{      ...,      markDefs[]{        ...      }    },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "publicationDate": publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),  "author": author->{    firstName,    lastName,    picture  }  }
+// Query: *[_type == "book" && slug.current == $slug][0] {    content[]{      ...,      markDefs[]{        ...      }    },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  description,  excerpt,  coverImage,  "publicationDate": publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),  "author": author->{    firstName,    lastName,    picture  }  }
 export type BookQueryResult = {
   content: null;
   _id: string;
   status: "draft" | "published";
   title: string | "Untitled";
   slug: string | null;
+  description: string | null;
   excerpt: string | null;
   coverImage: {
     asset?: {
@@ -889,9 +892,9 @@ declare module "@sanity/client" {
     "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{firstName, lastName, picture},\n\n  }\n": PostQueryResult;
     "\n  *[_type == \"post\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PostPagesSlugsResult;
     "\n  *[_type == \"page\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PagesSlugsResult;
-    "\n  *[_type == \"book\" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc) {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"publicationDate\": publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{\n    firstName,\n    lastName,\n    picture\n  }\n\n  }\n": AllBooksQueryResult;
-    "\n  *[_type == \"book\" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"publicationDate\": publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{\n    firstName,\n    lastName,\n    picture\n  }\n\n  }\n": MoreBooksQueryResult;
-    "\n  *[_type == \"book\" && slug.current == $slug][0] {\n    content[]{\n      ...,\n      markDefs[]{\n        ...\n      }\n    },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"publicationDate\": publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{\n    firstName,\n    lastName,\n    picture\n  }\n\n  }\n": BookQueryResult;
+    "\n  *[_type == \"book\" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc) {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  description,\n  excerpt,\n  coverImage,\n  \"publicationDate\": publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{\n    firstName,\n    lastName,\n    picture\n  }\n\n  }\n": AllBooksQueryResult;
+    "\n  *[_type == \"book\" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  description,\n  excerpt,\n  coverImage,\n  \"publicationDate\": publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{\n    firstName,\n    lastName,\n    picture\n  }\n\n  }\n": MoreBooksQueryResult;
+    "\n  *[_type == \"book\" && slug.current == $slug][0] {\n    content[]{\n      ...,\n      markDefs[]{\n        ...\n      }\n    },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  description,\n  excerpt,\n  coverImage,\n  \"publicationDate\": publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{\n    firstName,\n    lastName,\n    picture\n  }\n\n  }\n": BookQueryResult;
     "\n  *[_type == \"book\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": BookPagesSlugsResult;
   }
 }

@@ -4,24 +4,30 @@ import { moreBooksQuery, allBooksQuery } from "@/sanity/lib/queries";
 import { Book as BookType } from "@/sanity.types";
 import DateComponent from "@/app/components/Date";
 import OnBoarding from "@/app/components/Onboarding";
+import CoverImage from "./CoverImage";
+import { PortableText } from "@portabletext/react";
 
 const Book = ({ book }: { book: BookType }) => {
-  const { _id, title, slug,  description, publicationDate,excerpt } = book;
+  const { _id, title, slug,  description, publicationDate,coverImage } = book;
 
   return (
-    <article key={_id} className="flex max-w-xl flex-col items-start justify-between">
-      <div className="text-gray-500 text-sm">
-        <DateComponent dateString={publicationDate} />
-      </div>
+    <article key={_id} className="flex flex-row items-start justify-between">
+      <CoverImage image={coverImage} />
 
-      <h3 className="mt-3 text-2xl font-semibold">
-        <Link href={`/books/${slug}`} className="hover:text-red-500 underline transition-colors">
-          {title}
-        </Link>
-      </h3>
-      <p className="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">
-        {description}
-      </p>
+      <div className="flex flex-col w-2/3 ml-5">
+        <h3 className="mt-3 text-2xl font-semibold">
+          <Link href={`/books/${slug}`} className="hover:text-red-500 underline transition-colors">
+            {title}
+          </Link>
+        </h3>
+        <div className="text-gray-500 text-sm">
+        <DateComponent dateString={publicationDate} />
+        </div>
+        {description && (
+        <p className="mt-5 line-clamp-8 text-sm leading-6 text-gray-600">
+          {description}
+        </p>)}
+      </div>
     </article>
   );
 };

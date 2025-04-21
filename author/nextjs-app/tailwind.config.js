@@ -1,8 +1,9 @@
-import type { Config } from "tailwindcss";
-import typography from "@tailwindcss/typography";
+/** @type {import('tailwindcss').Config} */
+const typography = require('@tailwindcss/typography');
+const aspectRatio = require('@tailwindcss/aspect-ratio');
 
-export default {
-  content: ["./app/**/*.{ts,tsx}", "./sanity/**/*.{ts,tsx}"],
+module.exports= {
+  content: ["./app/**/*.{ts,tsx}", "./sanity/**/*.{ts,tsx}","./components/**/*.{ts,tsx}"],
   theme: {
     container: {
       center: true,
@@ -102,5 +103,5 @@ export default {
   future: {
     hoverOnlyWhenSupported: true,
   },
-  plugins: [typography],
-} satisfies Config;
+  plugins: [typography,aspectRatio],
+};
