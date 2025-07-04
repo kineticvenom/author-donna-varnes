@@ -1,11 +1,19 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { sanityFetch } from "@/sanity/lib/live";
+import { settingsQuery } from "@/sanity/lib/queries";
 
 import { AllPosts } from "@/app/components/Posts";
 import { AllBooks } from "./components/Books";
 
 
 export default async function Page() {
+  const { data: settings } = await sanityFetch({
+    query: settingsQuery,
+    stega: false,
+  });
+
+  const logo = settings?.logo?.asset?.url || "/images/Logo.png";
   return (
     <>
       <div className="bg-gradient-to-r from-red-200 from-0% via-white via-40%  relative">
@@ -17,9 +25,11 @@ export default async function Page() {
               <div className=" text-md leading-6 prose uppercase">
                 
               </div>
-              <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-black">
-              Donna Varnes
-              </h1>
+              <img 
+                src={logo}
+                alt="Logo"
+                className="h-20 sm:h-24 md:h-28 lg:h-32 object-contain"
+                />
             </div>
             <div className="mt-6 space-y-6 prose sm:prose-lg md:prose-xl lg:prose-2xl text-gray-700">
               <p>"Whats this text"

@@ -56,6 +56,22 @@ export const settings = defineType({
       ],
     }),
     defineField({
+      name: "backgroundImage",
+      title: "Background Image",
+      type: "image",
+      options: {
+        hotspot: true, // Allows cropping and focal point selection
+      },
+    }),
+    defineField({
+      name: "logo",
+      title: "Logo",
+      type: "image",
+      options: {
+        hotspot: true,
+      },
+    }),
+    defineField({
       name: 'ogImage',
       title: 'Open Graph Image',
       type: 'image',

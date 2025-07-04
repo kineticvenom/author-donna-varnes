@@ -57,17 +57,25 @@ const inter = Inter({
   display: "swap",
 });
 
+
+
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const { isEnabled: isDraftMode } = await draftMode();
+  const { data: settings } = await sanityFetch({
+    query: settingsQuery,
+    stega: false,
+  });
 
+  const backgroundImage = settings?.backgroundImage?.asset?.url || '/images/default-background.jpg';
   return (
     <html lang="en" className={`${inter.variable} bg-white text-black`}>
       <body>
-        <section className="min-h-screen pt-24">
+        <section className="min-h-screen pt-24" 
+          style={{backgroundImage: `url('${backgroundImage}')`, backgroundSize: "cover", backgroundPosition: "center"}}>
           {/* The <Toaster> component is responsible for rendering toast notifications used in /app/client-utils.ts and /app/components/DraftModeToast.tsx */}
           <Toaster />
           {isDraftMode && (
