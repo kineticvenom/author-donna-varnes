@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
-import Head from "next/head";
 
 import PageBuilderPage from "@/app/components/PageBuilder";
 import { sanityFetch } from "@/sanity/lib/live";
 import { getPageQuery, pagesSlugs } from "@/sanity/lib/queries";
 import { GetPageQueryResult } from "@/sanity.types";
 import { PageOnboarding } from "@/app/components/Onboarding";
-
-type Props = {
-  params: { slug: string };
-};
 
 /**
  * Generate the static params for the page.
@@ -18,44 +13,52 @@ type Props = {
 export async function generateStaticParams() {
   const result = await sanityFetch({
     query: pagesSlugs,
-    // // Use the published perspective in generateStaticParams
     perspective: "published",
     stega: false,
   });
   const pages = result.data as { slug: string | null }[];
-  return (
-    pages
-      .filter((page: { slug: string | null }): page is { slug: string } => !!page.slug)
-      .map((page) => ({ slug: page.slug }))
-  );
+
+  return pages
+    .filter((page): page is { slug: string } => !!page.slug)
+    .map((page) => ({ slug: page.slug }));
 }
-
-
 
 /**
  * Generate metadata for the page.
  * Learn more: https://nextjs.org/docs/app/api-reference/functions/generate-metadata#generatemetadata-function
  */
-export async function generateMetadata(props: Props): Promise<Metadata> {
-  const {slug} = props.params;
+export async function generateMetadata({
+  params,
+}: {
+  // params is now a Promise that resolves to { slug: string }
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+
   const { data: page } = await sanityFetch({
     query: getPageQuery,
-    params:{ slug: slug },
-    // Metadata should never contain stega
+    params: { slug },
     stega: false,
   });
 
   return {
     title: page?.name,
     description: page?.heading,
-  } satisfies Metadata;
+  };
 }
 
-export default async function Page(props: Props) {
-  const {slug} = props.params;
-  const [{ data: page }] = await Promise.all([
-    sanityFetch({ query: getPageQuery, params : { slug } }),
-  ]);
+export default async function Page({
+  params,
+}: {
+  // params must be awaited to extract slug
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+
+  const { data: page } = await sanityFetch({
+    query: getPageQuery,
+    params: { slug },
+  });
 
   if (!page?._id) {
     return (
@@ -67,19 +70,14 @@ export default async function Page(props: Props) {
 
   return (
     <div className="my-12 lg:my-24">
-
-      <div className="">
-        <div className="container">
-          <div className="pb-6 border-b border-gray-100">
-            <div className="max-w-3xl">
-              <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-7xl">
-                {page.heading}
-              </h2>
-              <p className="mt-4 text-base lg:text-lg leading-relaxed text-gray-600 uppercase font-light">
-                {page.subheading}
-              </p>
-            </div>
-          </div>
+      <div className="container pb-6 border-b border-gray-100">
+        <div className="max-w-3xl">
+          <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-7xl">
+            {page.heading}
+          </h2>
+          <p className="mt-4 text-base lg:text-lg leading-relaxed text-gray-600 uppercase font-light">
+            {page.subheading}
+          </p>
         </div>
       </div>
       <PageBuilderPage page={page as GetPageQueryResult} />

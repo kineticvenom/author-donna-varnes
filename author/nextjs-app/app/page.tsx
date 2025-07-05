@@ -32,11 +32,10 @@ export default async function Page() {
                 />
             </div>
             <div className="mt-6 space-y-6 prose sm:prose-lg md:prose-xl lg:prose-2xl text-gray-700">
-              <p>"Whats this text"
-
+              <p>&quot;Whats this text&quot;
               </p>
             </div>
-            <div className="flex items-center flex-col gap-4"><p>"where</p>
+            <div className="flex items-center flex-col gap-4"><p>&quot;where&quot;</p>
             </div>
           </div>
         </div>

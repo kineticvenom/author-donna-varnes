@@ -3,7 +3,15 @@ import { notFound } from "next/navigation";
 import { PortableText } from "@portabletext/react";
 import DateComponent from "@/app/components/Date";
 
-export default async function BookPage({ params }: { params: { slug: string } }) {
+export default async function BookPage({
+  params,
+}: {
+  // Next.js 15 now passes params as a Promise
+  params: Promise<{ slug: string }>;
+}) {
+  // await the promise to get your slug
+  const { slug } = await params;
+
   const bookFields = `
     _id,
     "status": select(_originalId in path("drafts.**") => "draft", "published"),
@@ -33,7 +41,7 @@ export default async function BookPage({ params }: { params: { slug: string } })
 
   const { data: book } = await sanityFetch({
     query: `*[_type == "book" && slug.current == $slug][0]{ ${bookFields} }`,
-    params: { slug: params.slug },
+    params: { slug },
   });
 
   if (!book) return notFound();
