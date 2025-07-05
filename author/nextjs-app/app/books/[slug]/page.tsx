@@ -1,0 +1,110 @@
+import { sanityFetch } from "@/sanity/lib/live";
+import { notFound } from "next/navigation";
+import { PortableText } from "@portabletext/react";
+import DateComponent from "@/app/components/Date";
+
+export default async function BookPage({ params }: { params: { slug: string } }) {
+  const bookFields = `
+    _id,
+    "status": select(_originalId in path("drafts.**") => "draft", "published"),
+    "title": coalesce(title, "Untitled"),
+    "slug": slug.current,
+    description,
+    excerpt,
+    coverImage {
+      asset-> {
+        url
+      }
+    },
+    "publicationDate": publicationDate,
+    isbn,
+    amazonLink,
+    "date": coalesce(date, _updatedAt),
+    "author": author->{
+      firstName,
+      lastName,
+      picture {
+        asset-> {
+          url
+        }
+      }
+    }
+  `;
+
+  const { data: book } = await sanityFetch({
+    query: `*[_type == "book" && slug.current == $slug][0]{ ${bookFields} }`,
+    params: { slug: params.slug },
+  });
+
+  if (!book) return notFound();
+
+  return (
+    <div className="container mx-auto py-12">
+      <article className="prose lg:prose-xl">
+        <h1 className="text-4xl font-bold text-gray-900">{book.title}</h1>
+
+        {book.status && (
+          <p className="text-xs uppercase text-gray-400">Status: {book.status}</p>
+        )}
+
+        {book.publicationDate && (
+          <p className="text-sm text-gray-500">
+            Published: <DateComponent dateString={book.publicationDate} />
+          </p>
+        )}
+
+        {book.coverImage?.asset?.url && (
+          <img
+            src={book.coverImage.asset.url}
+            alt={book.title}
+            className="w-full max-w-2xl mx-auto mt-6 rounded-md"
+          />
+        )}
+
+        {book.author && (
+          <div className="mt-4 flex items-center gap-3">
+            {book.author.picture?.asset?.url && (
+              <img
+                src={book.author.picture.asset.url}
+                alt={`${book.author.firstName} ${book.author.lastName}`}
+                className="h-10 w-10 rounded-full object-cover"
+              />
+            )}
+            <span className="text-sm text-gray-600">
+              By {book.author.firstName} {book.author.lastName}
+            </span>
+          </div>
+        )}
+
+        {book.description && (
+          <div className="mt-6">
+            <PortableText value={book.description} />
+          </div>
+        )}
+
+        {book.excerpt && (
+          <blockquote className="mt-6 italic border-l-4 border-gray-300 pl-4 text-gray-700">
+            {book.excerpt}
+          </blockquote>
+        )}
+
+        <div className="mt-6 space-y-2 text-sm">
+          {book.isbn && <p><strong>ISBN:</strong> {book.isbn}</p>}
+          {book.amazonLink && (
+            <p>
+              <strong>Buy:</strong>{" "}
+              <a
+                href={book.amazonLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline"
+              >
+                View on Amazon
+              </a>
+            </p>
+          )}
+        </div>
+      </article>
+    </div>
+  );
+}

@@ -24,3 +24,4 @@ export const schemaTypes = [
   callToAction,
   link,
 ]
+export default schemaTypes;

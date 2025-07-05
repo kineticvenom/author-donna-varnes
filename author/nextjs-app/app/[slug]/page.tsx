@@ -8,7 +8,7 @@ import { GetPageQueryResult } from "@/sanity.types";
 import { PageOnboarding } from "@/app/components/Onboarding";
 
 type Props = {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 };
 
 /**
@@ -16,24 +16,31 @@ type Props = {
  * Learn more: https://nextjs.org/docs/app/api-reference/functions/generate-static-params
  */
 export async function generateStaticParams() {
-  const { data } = await sanityFetch({
+  const result = await sanityFetch({
     query: pagesSlugs,
     // // Use the published perspective in generateStaticParams
     perspective: "published",
     stega: false,
   });
-  return data;
+  const pages = result.data as { slug: string | null }[];
+  return (
+    pages
+      .filter((page: { slug: string | null }): page is { slug: string } => !!page.slug)
+      .map((page) => ({ slug: page.slug }))
+  );
 }
+
+
 
 /**
  * Generate metadata for the page.
  * Learn more: https://nextjs.org/docs/app/api-reference/functions/generate-metadata#generatemetadata-function
  */
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const params = await props.params;
+  const {slug} = props.params;
   const { data: page } = await sanityFetch({
     query: getPageQuery,
-    params,
+    params:{ slug: slug },
     // Metadata should never contain stega
     stega: false,
   });
@@ -45,9 +52,9 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 export default async function Page(props: Props) {
-  const params = await props.params;
+  const {slug} = props.params;
   const [{ data: page }] = await Promise.all([
-    sanityFetch({ query: getPageQuery, params }),
+    sanityFetch({ query: getPageQuery, params : { slug } }),
   ]);
 
   if (!page?._id) {
@@ -60,9 +67,7 @@ export default async function Page(props: Props) {
 
   return (
     <div className="my-12 lg:my-24">
-      <Head>
-        <title>{page.heading}</title>
-      </Head>
+
       <div className="">
         <div className="container">
           <div className="pb-6 border-b border-gray-100">

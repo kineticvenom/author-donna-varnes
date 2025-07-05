@@ -15,20 +15,37 @@ import { sanityFetch, SanityLive } from "@/sanity/lib/live";
 import { settingsQuery } from "@/sanity/lib/queries";
 import { resolveOpenGraphImage } from "@/sanity/lib/utils";
 import { handleError } from "./client-utils";
+import { Settings } from "@/sanity.codegentypes"; // Adjust the import path as needed
 
 /**
  * Generate metadata for the page.
  * Learn more: https://nextjs.org/docs/app/api-reference/functions/generate-metadata#generatemetadata-function
  */
+
 export async function generateMetadata(): Promise<Metadata> {
-  const { data: settings } = await sanityFetch({
+  type SettingsQueryResult = {
+  title?: string | null;
+  description?: any; // or PortableTextBlock[] if you're using block content
+  ogImage?: {
+    asset?: { url: string | null; };
+    metadataBase?: string;
+  } | null;
+  backgroundImage?: {
+    asset?: { url: string | null; };
+  } | null;
+  };
+
+  const result = await sanityFetch({
     query: settingsQuery,
-    // Metadata should never contain stega
     stega: false,
   });
-  const title = settings?.title || demo.title;
-  const description = settings?.description || demo.description;
 
+  const settings = result.data as SettingsQueryResult;
+
+
+  const title = settings?.title || demo.title;
+
+  const description = settings?.description || demo.description;
   const ogImage = resolveOpenGraphImage(settings?.ogImage);
   let metadataBase: URL | undefined = undefined;
   try {
@@ -58,17 +75,30 @@ const inter = Inter({
 });
 
 
-
+type SettingsQueryResult = {
+  title?: string | null;
+  description?: any; // or PortableTextBlock[] if you're using block content
+  ogImage?: {
+    asset?: { url: string | null; };
+    metadataBase?: string;
+  } | null;
+  backgroundImage?: {
+    asset?: { url: string | null; };
+  } | null;
+  };
 export default async function RootLayout({
+  
   children,
 }: {
   children: React.ReactNode;
 }) {
   const { isEnabled: isDraftMode } = await draftMode();
-  const { data: settings } = await sanityFetch({
+  const result = await sanityFetch({
     query: settingsQuery,
     stega: false,
   });
+
+  const settings = result.data as SettingsQueryResult;
 
   const backgroundImage = settings?.backgroundImage?.asset?.url || '/images/default-background.jpg';
   return (

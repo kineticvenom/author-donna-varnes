@@ -5,14 +5,14 @@ import { settingsQuery } from "@/sanity/lib/queries";
 
 import { AllPosts } from "@/app/components/Posts";
 import { AllBooks } from "./components/Books";
-
+import { SettingsQueryResult } from "@/types/settings";
 
 export default async function Page() {
-  const { data: settings } = await sanityFetch({
+  const result = await sanityFetch({
     query: settingsQuery,
     stega: false,
   });
-
+  const settings = result.data as SettingsQueryResult;
   const logo = settings?.logo?.asset?.url || "/images/Logo.png";
   return (
     <>
