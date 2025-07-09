@@ -1,35 +1,17 @@
 import { defineQuery } from "next-sanity";
 
-export const settingsQuery = defineQuery(`*[_id == "siteSettings"][0]{
-  title,
-  description,
-  ogImage {
-    asset -> {
-      url
-    }
-  },
-  backgroundImage {
-    asset -> {
-      url
-    }
-  },
-  logo {
-    asset -> {
-      url
-    }
+// Common reusable field blocks
+const imageFields = /* groq */ `
+  asset->{url},
+  alt
+`;
+
+const authorFields = /* groq */ `
+  author->{
+    firstName,
+    lastName,
+    picture { ${imageFields} }
   }
-}`);
-
-
-const postFields = /* groq */ `
-  _id,
-  "status": select(_originalId in path("drafts.**") => "draft", "published"),
-  "title": coalesce(title, "Untitled"),
-  "slug": slug.current,
-  excerpt,
-  coverImage,
-  "date": coalesce(date, _updatedAt),
-  "author": author->{firstName, lastName, picture},
 `;
 
 const linkReference = /* groq */ `
@@ -41,11 +23,49 @@ const linkReference = /* groq */ `
 
 const linkFields = /* groq */ `
   link {
-      ...,
-      ${linkReference}
-      }
+    ...,
+    ${linkReference}
+  }
 `;
 
+const basePostFields = /* groq */ `
+  _id,
+  "status": select(_originalId in path("drafts.**") => "draft", "published"),
+  "title": coalesce(title, "Untitled"),
+  "slug": slug.current,
+  excerpt,
+  coverImage { ${imageFields} },
+  "date": coalesce(date, _updatedAt),
+  ${authorFields}
+`;
+
+const baseBookFields = /* groq */ `
+  _id,
+  "status": select(_originalId in path("drafts.**") => "draft", "published"),
+  "title": coalesce(title, "Untitled"),
+  "slug": slug.current,
+  description,
+  excerpt,
+  coverImage { ${imageFields} },
+  "publicationDate": publicationDate,
+  isbn,
+  amazonLink,
+  "date": coalesce(date, _updatedAt),
+  ${authorFields}
+`;
+
+// General Site Settings Query
+export const settingsQuery = defineQuery(`
+  *[_id == "siteSettings"][0]{
+    title,
+    description,
+    ogImage { asset->{ url } },
+    backgroundImage { asset->{ url } },
+    logo { asset->{ url } }
+  }
+`);
+
+// Page Queries
 export const getPageQuery = defineQuery(`
   *[_type == 'page' && slug.current == $slug][0]{
     _id,
@@ -56,110 +76,87 @@ export const getPageQuery = defineQuery(`
     subheading,
     "pageBuilder": pageBuilder[]{
       ...,
-      _type == "callToAction" => {
-        ${linkFields},
-      },
+      _type == "callToAction" => { ${linkFields} },
       _type == "infoSection" => {
         content[]{
           ...,
-          markDefs[]{
-            ...,
-            ${linkReference}
-          }
+          markDefs[]{ ..., ${linkReference} }
         }
       },
-    },
+    }
   }
 `);
 
+// Sitemap Query
 export const sitemapData = defineQuery(`
-  *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {
+  *[(_type == "page" || _type == "post") && defined(slug.current)] | order(_type asc){
     "slug": slug.current,
     _type,
-    _updatedAt,
+    _updatedAt
   }
 `);
 
+// Posts Queries with Post Type Filtering
 export const allPostsQuery = defineQuery(`
-  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {
-    ${postFields}
+  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc){
+    ${basePostFields},
+    postType
+  }
+`);
+
+export const postsByTypeQuery = defineQuery(`
+  *[_type == "post" && postType == $type && defined(slug.current)] | order(date desc, _updatedAt desc){
+    ${basePostFields}
+  }
+`);
+
+export const singlePostQuery = defineQuery(`
+  *[_type == "post" && slug.current == $slug][0]{
+    content[]{
+      ...,
+      markDefs[]{ ..., ${linkReference} }
+    },
+    ${basePostFields},
+    postType
   }
 `);
 
 export const morePostsQuery = defineQuery(`
-  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {
-    ${postFields}
+  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc)[0...$limit]{
+    ${basePostFields},
+    postType
   }
 `);
 
-export const postQuery = defineQuery(`
-  *[_type == "post" && slug.current == $slug] [0] {
-    content[]{
-    ...,
-    markDefs[]{
-      ...,
-      ${linkReference}
-    }
-  },
-    ${postFields}
+export const postSlugs = defineQuery(`
+  *[_type == "post" && defined(slug.current)]{
+    "slug": slug.current,
+    postType
   }
 `);
 
-export const postPagesSlugs = defineQuery(`
-  *[_type == "post" && defined(slug.current)]
-  {"slug": slug.current}
-`);
-
-export const pagesSlugs = defineQuery(`
-  *[_type == "page" && defined(slug.current)]
-  {"slug": slug.current}
-`);
-
-
-const bookFields = /* groq */ `
-  _id,
-  "status": select(_originalId in path("drafts.**") => "draft", "published"),
-  "title": coalesce(title, "Untitled"),
-  "slug": slug.current,
-  description,
-  excerpt,
-  coverImage,
-  "publicationDate": publicationDate,
-  isbn,
-  amazonLink,
-  "date": coalesce(date, _updatedAt),
-  "author": author->{
-    firstName,
-    lastName,
-    picture
-  }
-`;
-
+// Book Queries
 export const allBooksQuery = defineQuery(`
-  *[_type == "book" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc) {
-    ${bookFields}
+  *[_type == "book" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){
+    ${baseBookFields}
+  }
+`);
+
+export const singleBookQuery = defineQuery(`
+  *[_type == "book" && slug.current == $slug][0]{
+    content[]{ ..., markDefs[]{ ... } },
+    ${baseBookFields}
   }
 `);
 
 export const moreBooksQuery = defineQuery(`
-  *[_type == "book" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc) [0...$limit] {
-    ${bookFields}
+  *[_type == "book" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{
+    ${baseBookFields}
   }
 `);
 
-export const bookQuery = defineQuery(`
-  *[_type == "book" && slug.current == $slug][0] {
-    content[]{
-      ...,
-      markDefs[]{
-        ...
-      }
-    },
-    ${bookFields}
+export const bookSlugs = defineQuery(`
+  *[_type == "book" && defined(slug.current)]{
+    "slug": slug.current
   }
-`);
-
-export const bookPagesSlugs = defineQuery(`
-  *[_type == "book" && defined(slug.current)]
-  {"slug": slug.current}
 `);

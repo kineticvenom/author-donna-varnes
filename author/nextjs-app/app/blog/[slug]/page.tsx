@@ -17,21 +17,20 @@ type Props = {
 
 /**
  * Generate the static params for the page.
- * Learn more: https://nextjs.org/docs/app/api-reference/functions/generate-static-params
  */
 export async function generateStaticParams() {
   const { data } = await sanityFetch({
     query: postSlugs,
-    // Use the published perspective in generateStaticParams
     perspective: "published",
     stega: false,
   });
-  return data;
+
+  // Filter for only blog posts here if needed
+  return data.filter((post) => post.postType === "blog");
 }
 
 /**
  * Generate metadata for the page.
- * Learn more: https://nextjs.org/docs/app/api-reference/functions/generate-metadata#generatemetadata-function
  */
 export async function generateMetadata(
   props: Props,
@@ -41,9 +40,9 @@ export async function generateMetadata(
   const { data: post } = await sanityFetch({
     query: singlePostQuery,
     params,
-    // Metadata should never contain stega
     stega: false,
   });
+  
   const previousImages = (await parent).openGraph?.images || [];
   const ogImage = resolveOpenGraphImage(post?.coverImage);
 
@@ -62,17 +61,19 @@ export async function generateMetadata(
 
 export default async function PostPage(props: Props) {
   const params = await props.params;
-  const [{ data: post }] = await Promise.all([
-    sanityFetch({ query: singlePostQuery, params }),
-  ]);
 
-  if (!post?._id) {
+  const { data: post } = await sanityFetch({
+    query: singlePostQuery,
+    params,
+  });
+
+  if (!post?._id || post.postType !== "blog") {
     return notFound();
   }
 
   return (
     <>
-      <div className="">
+      <div>
         <div className="container my-12 lg:my-24 grid gap-12">
           <div>
             <div className="pb-6 grid gap-6 mb-6 border-b border-gray-100">
@@ -82,15 +83,13 @@ export default async function PostPage(props: Props) {
                 </h2>
               </div>
               <div className="max-w-3xl flex gap-4 items-center">
-                {post.author &&
-                  post.author.firstName &&
-                  post.author.lastName && (
-                    <Avatar person={post.author} date={post.date} />
-                  )}
+                {post.author?.firstName && post.author?.lastName && (
+                  <Avatar person={post.author} date={post.date} />
+                )}
               </div>
             </div>
             <article className="gap-6 grid max-w-4xl">
-              <div className="">
+              <div>
                 <CoverImage image={post.coverImage} priority />
               </div>
               {post.content?.length && (

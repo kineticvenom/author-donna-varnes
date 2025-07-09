@@ -36,6 +36,19 @@ export const post = defineType({
       title: 'Content',
       type: 'blockContent',
     }),
+    defineField({
+      name: 'postType',
+      title: 'Post Type',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Blog Post', value: 'blog'},
+          {title: 'Devotional', value: 'devotional'},
+        ],
+        layout: 'radio',
+      },
+      validation: (rule) => rule.required().error('Post type is required'),
+    }),
     // defineField({
     //   name: 'excerpt',
     //   title: 'Excerpt',
