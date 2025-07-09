@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import PageBuilderPage from "@/app/components/PageBuilder";
 import { sanityFetch } from "@/sanity/lib/live";
-import { getPageQuery, pagesSlugs } from "@/sanity/lib/queries";
+import { getPageQuery, sitemapData } from "@/sanity/lib/queries";
 import { GetPageQueryResult } from "@/sanity.types";
 import { PageOnboarding } from "@/app/components/Onboarding";
 
@@ -12,7 +12,7 @@ import { PageOnboarding } from "@/app/components/Onboarding";
  */
 export async function generateStaticParams() {
   const result = await sanityFetch({
-    query: pagesSlugs,
+    query: sitemapData,
     perspective: "published",
     stega: false,
   });
