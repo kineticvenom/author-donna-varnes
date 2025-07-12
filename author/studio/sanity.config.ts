@@ -2,7 +2,7 @@
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
-import { schemaTypes } from './src/schemaTypes'
+import { schemaTypes } from './schemaTypes'
 import { structure } from './src/structure'
 import { unsplashImageAsset } from 'sanity-plugin-asset-source-unsplash'
 import {
@@ -30,7 +30,8 @@ const homeLocation = {
 // Map your docs to frontend routes
 function resolveHref(type?: string, slug?: string): string|undefined {
   switch (type) {
-    case 'post': return slug ? `/posts/${slug}` : undefined
+    case 'blog': return slug ? `/blog/${slug}` : undefined
+    case 'devotional': return slug ? `/devotional/${slug}` : undefined
     case 'page': return slug ? `/${slug}`       : undefined
     default:
       console.warn('Unknown doc type:', type)
@@ -64,10 +65,15 @@ export default defineConfig({
             filter: `_type == "page" && slug.current == $slug || _id == $slug`,
           },
           {
-            route: '/posts/:slug',
-            filter: `_type == "post" && slug.current == $slug || _id == $slug`,
+            route: '/blog/:slug',
+            filter: `_type == "blog" && slug.current == $slug || _id == $slug`,
+          },
+          {
+            route: '/devotional/:slug',
+            filter: `_type == "devotional" && slug.current == $slug || _id == $slug`,
           },
         ]),
+
         locations: {
           settings: defineLocations({
             locations: [homeLocation],
@@ -85,18 +91,25 @@ export default defineConfig({
               ],
             }),
           }),
-          post: defineLocations({
+          blog: defineLocations({
             select: { title: 'title', slug: 'slug.current' },
             resolve: (doc) => ({
               locations: [
                 {
                   title: doc?.title || 'Untitled',
-                  href:  resolveHref('post', doc?.slug)!,
+                  href: resolveHref('blog', doc?.slug)!,
                 },
+              ],
+            }),
+          }),
+          devotional: defineLocations({
+            select: { title: 'title', slug: 'slug.current' },
+            resolve: (doc) => ({
+              locations: [
                 {
-                  title: 'Home',
-                  href:  '/',
-                } satisfies DocumentLocation,
+                  title: doc?.title || 'Untitled',
+                  href: resolveHref('devotional', doc?.slug)!,
+                },
               ],
             }),
           }),
