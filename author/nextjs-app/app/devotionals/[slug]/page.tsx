@@ -75,7 +75,7 @@ export default async function DevotionalPage(props: Props) {
     return notFound();
   }
 
-  return (
+ return (
     <>
       <div>
         <div className="container my-12 lg:my-24 grid gap-12">
