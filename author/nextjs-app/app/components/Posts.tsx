@@ -1,13 +1,21 @@
 import Link from "next/link";
-
 import { sanityFetch } from "@/sanity/lib/live";
-import { morePostsQuery, allPostsQuery } from "@/sanity/lib/queries";
-import { Post as PostType } from "@/sanity.types";
+import { moreDevotionalsQuery, allDevotionalsQuery, moreBlogsQuery, allBlogsQuery } from "@/sanity/lib/queries";
+import { MoreBlogsQueryResult, MoreDevotionalsQueryResult, AllBlogsQueryResult, AllDevotionalsQueryResult } from "@/sanity.types";
 import DateComponent from "@/app/components/Date";
 
+type PostType = MoreBlogsQueryResult[0] | MoreDevotionalsQueryResult[0];
 
 const Post = ({ post }: { post: PostType }) => {
-  const { _id, title, slug, excerpt, date } = post;
+  const { _id, title, slug, publicationDate} = post;
+
+function isBlogPost(post: PostType): post is MoreBlogsQueryResult[0] {
+  return (post as any)._type === "blog";
+}
+
+const href = isBlogPost(post) ? `/blog/${post.slug || ''}` : `/devotionals/${post.slug || ''}`;
+const description = isBlogPost(post) ? post.excerpt : post.scriptureReference;
+
 
   return (
     <article
@@ -15,20 +23,21 @@ const Post = ({ post }: { post: PostType }) => {
       className="flex max-w-xl flex-col items-start justify-between"
     >
       <div className="text-gray-500 text-sm">
-        <DateComponent dateString={date} />
+        {publicationDate && <DateComponent dateString={publicationDate} />}
       </div>
-
       <h3 className="mt-3 text-2xl font-semibold">
         <Link
           className="hover:text-red-500 underline transition-colors"
-          href={`/posts/${slug}`}
+          href={href}
         >
-          {title}
+          {title || 'Untitled'}
         </Link>
       </h3>
-      <p className="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">
-        {excerpt}
-      </p>
+      {description && (
+        <p className="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">
+          {description}
+        </p>
+      )}
     </article>
   );
 };
@@ -57,16 +66,40 @@ const Posts = ({
   </div>
 );
 
-export const MorePosts = async ({
+export const MoreBlogs = async ({
   skip,
   limit,
 }: {
   skip: string;
   limit: number;
 }) => {
-  const { data } = await sanityFetch({
-    query: morePostsQuery,
+const { data }: { data: MoreBlogsQueryResult } = await sanityFetch({
+  query: moreBlogsQuery,
+  params: { skip, limit },
+  perspective: 'published',
+});
+  if (!data || data.length === 0) {
+    return null;
+  }
+
+  return (
+    <Posts heading={`Recent Posts (${data.length})`}>
+      {data.map((blog) => <Post key={blog._id} post={blog} />)}
+    </Posts>
+  );
+};
+
+export const MoreDevotionals = async ({
+  skip,
+  limit,
+}: {
+  skip: string;
+  limit: number;
+}) => {
+  const { data } : {data:MoreDevotionalsQueryResult} = await sanityFetch({
+    query: moreDevotionalsQuery,
     params: { skip, limit },
+    perspective: 'published',
   });
 
   if (!data || data.length === 0) {
@@ -74,27 +107,54 @@ export const MorePosts = async ({
   }
 
   return (
-    <Posts heading={`Recent Posts (${data?.length})`}>
-      {data?.map((post: any) => <Post key={post._id} post={post} />)}
+    <Posts heading={`Recent Devotionals (${data.length})`}>
+      {data.map((devotional) => <Post key={devotional._id} post={devotional} />)}
     </Posts>
   );
 };
 
 export const AllPosts = async () => {
-  const { data } = await sanityFetch({ query: allPostsQuery });
+  const { data } : {data:AllBlogsQueryResult} = await sanityFetch({
+    query: allBlogsQuery,
+    perspective: 'published',
+  });
 
   if (!data || data.length === 0) {
     return <p>No posts available.</p>;
-  };
+  }
 
   return (
     <Posts
       heading="Recent Posts"
       subHeading={`${data.length === 1 ? "This blog post is" : `These ${data.length} blog posts are`} populated from your Sanity Studio.`}
     >
-      {data.map((post: any) => (
+      {data.map((post) => (
         <Post key={post._id} post={post} />
       ))}
     </Posts>
   );
 };
+
+export const AllDevotionals = async () => {
+  const { data } : {data:AllDevotionalsQueryResult} = await sanityFetch({
+    query: allDevotionalsQuery,
+    perspective: 'published',
+  });
+
+  if (!data || data.length === 0) {
+    return <p>No devotionals available.</p>;
+  }
+
+  return (
+    <Posts
+      heading="Recent Devotionals"
+      subHeading={`${data.length === 1 ? "This devotional is" : `These ${data.length} devotionals are`} populated from your Sanity Studio.`}
+    >
+      {data.map((post) => (
+        <Post key={post._id} post={post} />
+      ))}
+    </Posts>
+  );
+};
+
+export default Post;

@@ -1,5 +1,5 @@
 import { sanityFetch } from "@/sanity/lib/live";
-import { postsByTypeQuery } from "@/sanity/lib/queries";
+import { allBlogsQuery } from "@/sanity/lib/queries";
 import { PortableTextBlock } from "next-sanity";
 import CoverImage from "@/app/components/CoverImage";
 import Link from "next/link";
@@ -7,7 +7,7 @@ import DateComponent from "@/app/components/Date";
 
 export default async function BlogPage() {
   const { data: posts } = await sanityFetch({
-    query: postsByTypeQuery,
+    query: allBlogsQuery,
     params: { type: "blog" },
   });
 

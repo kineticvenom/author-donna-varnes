@@ -5,11 +5,12 @@ import { Suspense } from "react";
 
 import Avatar from "@/app/components/Avatar";
 import CoverImage from "@/app/components/CoverImage";
-import { MorePosts } from "@/app/components/Posts";
+import { MoreBlogs } from "@/app/components/Posts";
 import PortableText from "@/app/components/PortableText";
 import { sanityFetch } from "@/sanity/lib/live";
-import { postSlugs, singlePostQuery } from "@/sanity/lib/queries";
+import { blogSlugs, singleBlogQuery } from "@/sanity/lib/queries";
 import { resolveOpenGraphImage } from "@/sanity/lib/utils";
+import DateComponent from "@/app/components/Date";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -20,13 +21,13 @@ type Props = {
  */
 export async function generateStaticParams() {
   const { data } = await sanityFetch({
-    query: postSlugs,
+    query: blogSlugs,
     perspective: "published",
     stega: false,
   });
 
   // Filter for only blog posts here if needed
-  return data.filter((post) => post.postType === "blog");
+  return data
 }
 
 /**
@@ -38,7 +39,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const params = await props.params;
   const { data: post } = await sanityFetch({
-    query: singlePostQuery,
+    query: singleBlogQuery,
     params,
     stega: false,
   });
@@ -63,14 +64,14 @@ export default async function PostPage(props: Props) {
   const params = await props.params;
 
   const { data: post } = await sanityFetch({
-    query: singlePostQuery,
+    query: singleBlogQuery,
     params,
   });
 
-  if (!post?._id || post.postType !== "blog") {
+  if (!post?._id) {
     return notFound();
   }
-
+  const hasContent = Array.isArray(post.content) && post.content.length > 0;
   return (
     <>
       <div>
@@ -78,34 +79,67 @@ export default async function PostPage(props: Props) {
           <div>
             <div className="pb-6 grid gap-6 mb-6 border-b border-gray-100">
               <div className="max-w-3xl flex flex-col gap-6">
-                <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-7xl">
+                <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-7xl">
                   {post.title}
-                </h2>
-              </div>
-              <div className="max-w-3xl flex gap-4 items-center">
+                </h1>
+
+                {post.status && (
+                  <p className="text-xs uppercase text-gray-400">
+                    Status: {post.status}
+                  </p>
+                )}
+
+                {post.publicationDate && (
+                  <p className="text-sm text-gray-500">
+                    Published: <DateComponent dateString={post.publicationDate} />
+                  </p>
+                )}
+
                 {post.author?.firstName && post.author?.lastName && (
-                  <Avatar person={post.author} date={post.date} />
+                  <div className="mt-4 flex items-center gap-3">
+                    {post.author.picture?.asset?.url && (
+                      <img
+                        src={post.author.picture.asset.url}
+                        alt={`${post.author.firstName} ${post.author.lastName}`}
+                        className="h-10 w-10 rounded-full object-cover"
+                      />
+                    )}
+                    <span className="text-sm text-gray-600">
+                      By {post.author.firstName} {post.author.lastName}
+                    </span>
+                  </div>
                 )}
               </div>
             </div>
+
             <article className="gap-6 grid max-w-4xl">
-              <div>
-                <CoverImage image={post.coverImage} priority />
-              </div>
-              {post.content?.length && (
+              {post.coverImage && (
+                <div>
+                  <CoverImage image={post.coverImage} priority />
+                </div>
+              )}
+
+              {hasContent && (
                 <PortableText
                   className="max-w-2xl"
                   value={post.content as PortableTextBlock[]}
                 />
               )}
+
+              {post.excerpt && (
+                <blockquote className="mt-6 italic border-l-4 border-gray-300 pl-4 text-gray-700">
+                  {post.excerpt}
+                </blockquote>
+              )}
             </article>
           </div>
         </div>
       </div>
+
       <div className="border-t border-gray-100">
         <div className="container my-12 lg:my-24 grid gap-12">
           <aside>
-            <Suspense>{await MorePosts({ skip: post._id, limit: 2 })}</Suspense>
+            <Suspense>{await MoreBlogs({ skip: post._id, limit: 2 })}</Suspense>
           </aside>
         </div>
       </div>

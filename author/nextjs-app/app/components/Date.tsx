@@ -1,17 +1,25 @@
-import { format } from "date-fns";
+import { format, isValid, parseISO } from 'date-fns';
 
 export default function DateComponent({
   dateString,
 }: {
-  dateString: string | undefined;
+  dateString?: string;
 }) {
   if (!dateString) {
     return null;
   }
 
-  return (
-    <time dateTime={dateString}>
-      {format(new Date(dateString), "LLLL	d, yyyy")}
-    </time>
-  );
+  try {
+    const date = parseISO(dateString);
+    if (!isValid(date)) {
+      return null;
+    }
+    return (
+      <time dateTime={dateString}>
+        {format(date, 'LLLL d, yyyy')}
+      </time>
+    );
+  } catch {
+    return null;
+  }
 }

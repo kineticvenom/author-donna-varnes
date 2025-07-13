@@ -1,5 +1,5 @@
 import { stegaClean } from "@sanity/client/stega";
-import { Image } from "next-sanity/image";
+import Image from "next/image";
 import { urlForImage } from "@/sanity/lib/utils";
 
 interface CoverImageProps {
@@ -10,11 +10,12 @@ interface CoverImageProps {
 export default function CoverImage({ image: source, priority }: CoverImageProps) {
   const hasValidImage = source?.asset?._ref;
   const imageUrl = hasValidImage
-    ? urlForImage(source)?.auto("format").url()
+    ? urlForImage(source)?.auto("format").width(300).height(450).url()
     : null;
 
-  if (!imageUrl) {
-    // Render a placeholder or nothing if image is invalid
+  console.log('CoverImage Debug:', { source, hasValidImage, imageUrl });
+
+  if (!imageUrl || !hasValidImage) {
     return (
       <div
         className="bg-slate-100 text-center text-gray-400 text-sm italic flex items-center justify-center w-[300px] h-[450px] mx-auto"
@@ -29,9 +30,9 @@ export default function CoverImage({ image: source, priority }: CoverImageProps)
     <div className="w-[300px] mx-auto">
       <Image
         src={imageUrl}
-        alt={stegaClean(source?.alt) || ""}
-        width={1000}
-        height={1500}
+        alt={stegaClean(source?.alt) || "Image"}
+        width={300}
+        height={450}
         sizes="(max-width: 768px) 100vw, 300px"
         priority={priority}
       />

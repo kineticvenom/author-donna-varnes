@@ -13,86 +13,12 @@
  */
 
 // Source: schema.json
-export type SanityImagePaletteSwatch = {
-  _type: "sanity.imagePaletteSwatch";
-  background?: string;
-  foreground?: string;
-  population?: number;
-  title?: string;
-};
-
-export type SanityImagePalette = {
-  _type: "sanity.imagePalette";
-  darkMuted?: SanityImagePaletteSwatch;
-  lightVibrant?: SanityImagePaletteSwatch;
-  darkVibrant?: SanityImagePaletteSwatch;
-  vibrant?: SanityImagePaletteSwatch;
-  dominant?: SanityImagePaletteSwatch;
-  lightMuted?: SanityImagePaletteSwatch;
-  muted?: SanityImagePaletteSwatch;
-};
-
-export type SanityImageDimensions = {
-  _type: "sanity.imageDimensions";
-  height?: number;
-  width?: number;
-  aspectRatio?: number;
-};
-
-export type SanityFileAsset = {
-  _id: string;
-  _type: "sanity.fileAsset";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  originalFilename?: string;
-  label?: string;
-  title?: string;
-  description?: string;
-  altText?: string;
-  sha1hash?: string;
-  extension?: string;
-  mimeType?: string;
-  size?: number;
-  assetId?: string;
-  uploadId?: string;
-  path?: string;
-  url?: string;
-  source?: SanityAssetSourceData;
-};
-
-export type Geopoint = {
-  _type: "geopoint";
-  lat?: number;
-  lng?: number;
-  alt?: number;
-};
-
 export type CallToAction = {
   _type: "callToAction";
   heading?: string;
   text?: string;
   buttonText?: string;
   link?: Link;
-};
-
-export type Link = {
-  _type: "link";
-  linkType?: "href" | "page" | "post";
-  href?: string;
-  page?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "page";
-  };
-  post?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "post";
-  };
-  openInNewTab?: boolean;
 };
 
 export type InfoSection = {
@@ -109,7 +35,7 @@ export type InfoSection = {
     style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
     listItem?: "bullet" | "number";
     markDefs?: Array<{
-      linkType?: "href" | "page" | "post";
+      linkType?: "href" | "page" | "blog";
       href?: string;
       page?: {
         _ref: string;
@@ -117,11 +43,11 @@ export type InfoSection = {
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "page";
       };
-      post?: {
+      blog?: {
         _ref: string;
         _type: "reference";
         _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "post";
+        [internalGroqTypeReferenceTo]?: "blog";
       };
       openInNewTab?: boolean;
       _type: "link";
@@ -143,7 +69,7 @@ export type BlockContent = Array<{
   style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
   listItem?: "bullet" | "number";
   markDefs?: Array<{
-    linkType?: "href" | "page" | "post";
+    linkType?: "href" | "page" | "blog";
     href?: string;
     page?: {
       _ref: string;
@@ -151,11 +77,11 @@ export type BlockContent = Array<{
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "page";
     };
-    post?: {
+    blog?: {
       _ref: string;
       _type: "reference";
       _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "post";
+      [internalGroqTypeReferenceTo]?: "blog";
     };
     openInNewTab?: boolean;
     _type: "link";
@@ -183,6 +109,7 @@ export type Book = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -198,6 +125,38 @@ export type Book = {
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "person";
   };
+};
+
+export type Devotional = {
+  _id: string;
+  _type: "devotional";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  scriptureReference?: string;
+  coverImage?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  publicationDate?: string;
+  author?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "person";
+  };
+  content?: BlockContent;
 };
 
 export type Page = {
@@ -217,15 +176,14 @@ export type Page = {
   } & InfoSection>;
 };
 
-export type Post = {
+export type Blog = {
   _id: string;
-  _type: "post";
+  _type: "blog";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
   title?: string;
   slug?: Slug;
-  content?: BlockContent;
   excerpt?: string;
   coverImage?: {
     asset?: {
@@ -234,18 +192,20 @@ export type Post = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
     _type: "image";
   };
-  date?: string;
+  publicationDate?: string;
   author?: {
     _ref: string;
     _type: "reference";
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "person";
   };
+  content?: BlockContent;
 };
 
 export type Person = {
@@ -263,6 +223,7 @@ export type Person = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -270,10 +231,48 @@ export type Person = {
   };
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
+export type NavigationSettings = {
+  _id: string;
+  _type: "navigationSettings";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  mainNav?: Array<{
+    title?: string;
+    link?: Link;
+    _key: string;
+  }>;
+};
+
+export type Link = {
+  _type: "link";
+  linkType?: "href" | "page" | "blog" | "devotional" | "book";
+  href?: string;
+  page?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "page";
+  };
+  blog?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "blog";
+  };
+  devotional?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "devotional";
+  };
+  book?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "book";
+  };
+  openInNewTab?: boolean;
 };
 
 export type Settings = {
@@ -301,6 +300,30 @@ export type Settings = {
     _type: "block";
     _key: string;
   }>;
+  backgroundImage?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  logo?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
   ogImage?: {
     asset?: {
       _ref: string;
@@ -308,69 +331,13 @@ export type Settings = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
     metadataBase?: string;
     _type: "image";
   };
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
-
-export type SanityImageAsset = {
-  _id: string;
-  _type: "sanity.imageAsset";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  originalFilename?: string;
-  label?: string;
-  title?: string;
-  description?: string;
-  altText?: string;
-  sha1hash?: string;
-  extension?: string;
-  mimeType?: string;
-  size?: number;
-  assetId?: string;
-  uploadId?: string;
-  path?: string;
-  url?: string;
-  metadata?: SanityImageMetadata;
-  source?: SanityAssetSourceData;
-};
-
-export type SanityAssetSourceData = {
-  _type: "sanity.assetSourceData";
-  name?: string;
-  id?: string;
-  url?: string;
-};
-
-export type SanityImageMetadata = {
-  _type: "sanity.imageMetadata";
-  location?: Geopoint;
-  dimensions?: SanityImageDimensions;
-  palette?: SanityImagePalette;
-  lqip?: string;
-  blurHash?: string;
-  hasAlpha?: boolean;
-  isOpaque?: boolean;
 };
 
 export type SanityAssistInstructionTask = {
@@ -494,11 +461,129 @@ export type SanityAssistSchemaTypeField = {
   } & SanityAssistInstruction>;
 };
 
-export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Geopoint | CallToAction | Link | InfoSection | BlockContent | Book | Page | Post | Person | Slug | Settings | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField;
+export type SanityImagePaletteSwatch = {
+  _type: "sanity.imagePaletteSwatch";
+  background?: string;
+  foreground?: string;
+  population?: number;
+  title?: string;
+};
+
+export type SanityImagePalette = {
+  _type: "sanity.imagePalette";
+  darkMuted?: SanityImagePaletteSwatch;
+  lightVibrant?: SanityImagePaletteSwatch;
+  darkVibrant?: SanityImagePaletteSwatch;
+  vibrant?: SanityImagePaletteSwatch;
+  dominant?: SanityImagePaletteSwatch;
+  lightMuted?: SanityImagePaletteSwatch;
+  muted?: SanityImagePaletteSwatch;
+};
+
+export type SanityImageDimensions = {
+  _type: "sanity.imageDimensions";
+  height?: number;
+  width?: number;
+  aspectRatio?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityFileAsset = {
+  _id: string;
+  _type: "sanity.fileAsset";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  originalFilename?: string;
+  label?: string;
+  title?: string;
+  description?: string;
+  altText?: string;
+  sha1hash?: string;
+  extension?: string;
+  mimeType?: string;
+  size?: number;
+  assetId?: string;
+  uploadId?: string;
+  path?: string;
+  url?: string;
+  source?: SanityAssetSourceData;
+};
+
+export type SanityImageAsset = {
+  _id: string;
+  _type: "sanity.imageAsset";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  originalFilename?: string;
+  label?: string;
+  title?: string;
+  description?: string;
+  altText?: string;
+  sha1hash?: string;
+  extension?: string;
+  mimeType?: string;
+  size?: number;
+  assetId?: string;
+  uploadId?: string;
+  path?: string;
+  url?: string;
+  metadata?: SanityImageMetadata;
+  source?: SanityAssetSourceData;
+};
+
+export type SanityImageMetadata = {
+  _type: "sanity.imageMetadata";
+  location?: Geopoint;
+  dimensions?: SanityImageDimensions;
+  palette?: SanityImagePalette;
+  lqip?: string;
+  blurHash?: string;
+  hasAlpha?: boolean;
+  isOpaque?: boolean;
+};
+
+export type Geopoint = {
+  _type: "geopoint";
+  lat?: number;
+  lng?: number;
+  alt?: number;
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
+export type SanityAssetSourceData = {
+  _type: "sanity.assetSourceData";
+  name?: string;
+  id?: string;
+  url?: string;
+};
+
+export type AllSanitySchemaTypes = CallToAction | InfoSection | BlockContent | Book | Devotional | Page | Blog | Person | NavigationSettings | Link | Settings | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./sanity/lib/queries.ts
 // Variable: settingsQuery
-// Query: *[_id == "siteSettings"][0]{    title,    description,    ogImage { asset->{ url } },    backgroundImage { asset->{ url } },    logo { asset->{ url } }  }
+// Query: *[_id == "siteSettings"][0]{    title,    description,    ogImage {   asset->{ _id, _ref, url },  alt },    backgroundImage {   asset->{ _id, _ref, url },  alt },    logo {   asset->{ _id, _ref, url },  alt }  }
 export type SettingsQueryResult = {
   title: null;
   description: null;
@@ -508,6 +593,12 @@ export type SettingsQueryResult = {
 } | {
   title: string | null;
   description: null;
+  ogImage: null;
+  backgroundImage: null;
+  logo: null;
+} | {
+  title: string | null;
+  description: string | null;
   ogImage: null;
   backgroundImage: null;
   logo: null;
@@ -533,84 +624,51 @@ export type SettingsQueryResult = {
   }> | null;
   ogImage: {
     asset: {
+      _id: string;
+      _ref: null;
       url: string | null;
     } | null;
+    alt: string | null;
   } | null;
-  backgroundImage: null;
-  logo: null;
-} | {
-  title: string | null;
-  description: string | null;
-  ogImage: null;
-  backgroundImage: null;
-  logo: null;
-} | null;
-// Variable: getPageQuery
-// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    "pageBuilder": pageBuilder[]{      ...,      _type == "callToAction" => {   link {    ...,      _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }  } },      _type == "infoSection" => {        content[]{          ...,          markDefs[]{ ...,   _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  } }        }      },    }  }
-export type GetPageQueryResult = {
-  _id: string;
-  _type: "page";
-  name: string | null;
-  slug: Slug | null;
-  heading: string | null;
-  subheading: string | null;
-  pageBuilder: Array<{
-    _key: string;
-    _type: "callToAction";
-    heading?: string;
-    text?: string;
-    buttonText?: string;
-    link: {
-      _type: "link";
-      linkType?: "href" | "page" | "post";
-      href?: string;
-      page: string | null;
-      post: string | null;
-      openInNewTab?: boolean;
+  backgroundImage: {
+    asset: {
+      _id: string;
+      _ref: null;
+      url: string | null;
     } | null;
-  } | {
-    _key: string;
-    _type: "infoSection";
-    heading?: string;
-    subheading?: string;
-    content: Array<{
-      children?: Array<{
-        marks?: Array<string>;
-        text?: string;
-        _type: "span";
-        _key: string;
-      }>;
-      style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
-      listItem?: "bullet" | "number";
-      markDefs: Array<{
-        linkType?: "href" | "page" | "post";
-        href?: string;
-        page: string | null;
-        post: string | null;
-        openInNewTab?: boolean;
-        _type: "link";
-        _key: string;
-      }> | null;
-      level?: number;
-      _type: "block";
-      _key: string;
-    }> | null;
-  }> | null;
+    alt: null;
+  } | null;
+  logo: {
+    asset: {
+      _id: string;
+      _ref: null;
+      url: string | null;
+    } | null;
+    alt: null;
+  } | null;
 } | null;
 // Variable: sitemapData
-// Query: *[(_type == "page" || _type == "post") && defined(slug.current)] | order(_type asc){    "slug": slug.current,    _type,    _updatedAt  }
+// Query: *[(_type in ["page", "blog", "devotional", "book"]) && defined(slug.current)] | order(_type asc){    "slug": slug.current,    _type,    _updatedAt  }
 export type SitemapDataResult = Array<{
   slug: string | null;
-  _type: "page";
+  _type: "blog";
   _updatedAt: string;
 } | {
   slug: string | null;
-  _type: "post";
+  _type: "book";
+  _updatedAt: string;
+} | {
+  slug: string | null;
+  _type: "devotional";
+  _updatedAt: string;
+} | {
+  slug: string | null;
+  _type: "page";
   _updatedAt: string;
 }>;
-// Variable: allPostsQuery
-// Query: *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc){      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage {   asset->{url},  alt },  "date": coalesce(date, _updatedAt),    author->{    firstName,    lastName,    picture {   asset->{url},  alt }  },    postType  }
-export type AllPostsQueryResult = Array<{
+// Variable: allBlogsQuery
+// Query: *[_type == "blog" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage {   asset->{ _id, _ref, url },  alt },  publicationDate,    author->{ _id, firstName, lastName, picture {   asset->{ _id, _ref, url },  alt } }  }
+export type AllBlogsQueryResult = Array<{
   _id: string;
   status: "draft" | "published";
   title: string | "Untitled";
@@ -618,52 +676,30 @@ export type AllPostsQueryResult = Array<{
   excerpt: string | null;
   coverImage: {
     asset: {
+      _id: string;
+      _ref: null;
       url: string | null;
     } | null;
     alt: string | null;
   } | null;
-  date: string;
+  publicationDate: string | null;
   author: {
+    _id: string;
     firstName: string | null;
     lastName: string | null;
     picture: {
       asset: {
-        url: string | null;
-      } | null;
-      alt: string | null;
-    } | null;
-  } | null;
-  postType: null;
-}>;
-// Variable: postsByTypeQuery
-// Query: *[_type == "post" && postType == $type && defined(slug.current)] | order(date desc, _updatedAt desc){      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage {   asset->{url},  alt },  "date": coalesce(date, _updatedAt),    author->{    firstName,    lastName,    picture {   asset->{url},  alt }  }  }
-export type PostsByTypeQueryResult = Array<{
-  _id: string;
-  status: "draft" | "published";
-  title: string | "Untitled";
-  slug: string | null;
-  excerpt: string | null;
-  coverImage: {
-    asset: {
-      url: string | null;
-    } | null;
-    alt: string | null;
-  } | null;
-  date: string;
-  author: {
-    firstName: string | null;
-    lastName: string | null;
-    picture: {
-      asset: {
+        _id: string;
+        _ref: null;
         url: string | null;
       } | null;
       alt: string | null;
     } | null;
   } | null;
 }>;
-// Variable: singlePostQuery
-// Query: *[_type == "post" && slug.current == $slug][0]{    content[]{      ...,      markDefs[]{ ...,   _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  } }    },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage {   asset->{url},  alt },  "date": coalesce(date, _updatedAt),    author->{    firstName,    lastName,    picture {   asset->{url},  alt }  },    postType  }
-export type SinglePostQueryResult = {
+// Variable: singleBlogQuery
+// Query: *[_type == "blog" && slug.current == $slug][0]{    content[]{      ...,      markDefs[]{ ...,   _type,  _key,  "pageSlug": page->slug.current,  "blogSlug": blog->slug.current,  "devotionalSlug": devotional->slug.current,  "bookSlug": book->slug.current,  href,  openInNewTab }    },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage {   asset->{ _id, _ref, url },  alt },  publicationDate,    author->{ _id, firstName, lastName, picture {   asset->{ _id, _ref, url },  alt } }  }
+export type SingleBlogQueryResult = {
   content: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -674,13 +710,27 @@ export type SinglePostQueryResult = {
     style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
     listItem?: "bullet" | "number";
     markDefs: Array<{
-      linkType?: "href" | "page" | "post";
-      href?: string;
-      page: string | null;
-      post: string | null;
-      openInNewTab?: boolean;
+      linkType?: "blog" | "href" | "page";
+      href: string | null;
+      page?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "page";
+      };
+      blog?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "blog";
+      };
+      openInNewTab: boolean | null;
       _type: "link";
       _key: string;
+      pageSlug: string | null;
+      blogSlug: string | null;
+      devotionalSlug: null;
+      bookSlug: null;
     }> | null;
     level?: number;
     _type: "block";
@@ -693,26 +743,30 @@ export type SinglePostQueryResult = {
   excerpt: string | null;
   coverImage: {
     asset: {
+      _id: string;
+      _ref: null;
       url: string | null;
     } | null;
     alt: string | null;
   } | null;
-  date: string;
+  publicationDate: string | null;
   author: {
+    _id: string;
     firstName: string | null;
     lastName: string | null;
     picture: {
       asset: {
+        _id: string;
+        _ref: null;
         url: string | null;
       } | null;
       alt: string | null;
     } | null;
   } | null;
-  postType: null;
 } | null;
-// Variable: morePostsQuery
-// Query: *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc)[0...$limit]{      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage {   asset->{url},  alt },  "date": coalesce(date, _updatedAt),    author->{    firstName,    lastName,    picture {   asset->{url},  alt }  },    postType  }
-export type MorePostsQueryResult = Array<{
+// Variable: moreBlogsQuery
+// Query: *[_type == "blog" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage {   asset->{ _id, _ref, url },  alt },  publicationDate,    author->{ _id, firstName, lastName, picture {   asset->{ _id, _ref, url },  alt } }  }
+export type MoreBlogsQueryResult = Array<{
   _id: string;
   status: "draft" | "published";
   title: string | "Untitled";
@@ -720,31 +774,161 @@ export type MorePostsQueryResult = Array<{
   excerpt: string | null;
   coverImage: {
     asset: {
+      _id: string;
+      _ref: null;
       url: string | null;
     } | null;
     alt: string | null;
   } | null;
-  date: string;
+  publicationDate: string | null;
   author: {
+    _id: string;
     firstName: string | null;
     lastName: string | null;
     picture: {
       asset: {
+        _id: string;
+        _ref: null;
         url: string | null;
       } | null;
       alt: string | null;
     } | null;
   } | null;
-  postType: null;
 }>;
-// Variable: postSlugs
-// Query: *[_type == "post" && defined(slug.current)]{    "slug": slug.current,    postType  }
-export type PostSlugsResult = Array<{
+// Variable: blogSlugs
+// Query: *[_type == "blog" && defined(slug.current)]{    "slug": slug.current  }
+export type BlogSlugsResult = Array<{
   slug: string | null;
-  postType: null;
+}>;
+// Variable: allDevotionalsQuery
+// Query: *[_type == "devotional" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){      _id,  _type,  title,  slug { current },  scriptureReference,  coverImage {   asset->{ _id, _ref, url },  alt },  publicationDate,    author->{ _id, firstName, lastName, picture {   asset->{ _id, _ref, url },  alt } }  }
+export type AllDevotionalsQueryResult = Array<{
+  _id: string;
+  _type: "devotional";
+  title: string | null;
+  slug: {
+    current: string | null;
+  } | null;
+  scriptureReference: string | null;
+  coverImage: {
+    asset: {
+      _id: string;
+      _ref: null;
+      url: string | null;
+    } | null;
+    alt: string | null;
+  } | null;
+  publicationDate: string | null;
+  author: {
+    _id: string;
+    firstName: string | null;
+    lastName: string | null;
+    picture: {
+      asset: {
+        _id: string;
+        _ref: null;
+        url: string | null;
+      } | null;
+      alt: string | null;
+    } | null;
+  } | null;
+}>;
+// Variable: moreDevotionalsQuery
+// Query: *[_type == "devotional" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{      _id,  _type,  title,  slug { current },  scriptureReference,  coverImage {   asset->{ _id, _ref, url },  alt },  publicationDate,    author->{ _id, firstName, lastName, picture {   asset->{ _id, _ref, url },  alt } }  }
+export type MoreDevotionalsQueryResult = Array<{
+  _id: string;
+  _type: "devotional";
+  title: string | null;
+  slug: {
+    current: string | null;
+  } | null;
+  scriptureReference: string | null;
+  coverImage: {
+    asset: {
+      _id: string;
+      _ref: null;
+      url: string | null;
+    } | null;
+    alt: string | null;
+  } | null;
+  publicationDate: string | null;
+  author: {
+    _id: string;
+    firstName: string | null;
+    lastName: string | null;
+    picture: {
+      asset: {
+        _id: string;
+        _ref: null;
+        url: string | null;
+      } | null;
+      alt: string | null;
+    } | null;
+  } | null;
+}>;
+// Variable: singleDevotionalQuery
+// Query: *[_type == "devotional" && slug.current == $slug][0]{    content[] {      _type,      _key,      style,      children[] { _type, _key, text, marks },      markDefs[] {        _type,        _key,        "pageSlug": page->slug.current,        "blogSlug": blog->slug.current,        "devotionalSlug": devotional->slug.current,        "bookSlug": book->slug.current,        href,        openInNewTab      }    },      _id,  _type,  title,  slug { current },  scriptureReference,  coverImage {   asset->{ _id, _ref, url },  alt },  publicationDate,    author->{ _id, firstName, lastName, picture {   asset->{ _id, _ref, url },  alt } }  }
+export type SingleDevotionalQueryResult = {
+  content: Array<{
+    _type: "block";
+    _key: string;
+    style: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal" | null;
+    children: Array<{
+      _type: "span";
+      _key: string;
+      text: string | null;
+      marks: Array<string> | null;
+    }> | null;
+    markDefs: Array<{
+      _type: "link";
+      _key: string;
+      pageSlug: string | null;
+      blogSlug: string | null;
+      devotionalSlug: null;
+      bookSlug: null;
+      href: string | null;
+      openInNewTab: boolean | null;
+    }> | null;
+  }> | null;
+  _id: string;
+  _type: "devotional";
+  title: string | null;
+  slug: {
+    current: string | null;
+  } | null;
+  scriptureReference: string | null;
+  coverImage: {
+    asset: {
+      _id: string;
+      _ref: null;
+      url: string | null;
+    } | null;
+    alt: string | null;
+  } | null;
+  publicationDate: string | null;
+  author: {
+    _id: string;
+    firstName: string | null;
+    lastName: string | null;
+    picture: {
+      asset: {
+        _id: string;
+        _ref: null;
+        url: string | null;
+      } | null;
+      alt: string | null;
+    } | null;
+  } | null;
+} | null;
+// Variable: devotionalSlugs
+// Query: *[_type == "devotional" && defined(slug.current)]{    slug { current }  }
+export type DevotionalSlugsResult = Array<{
+  slug: {
+    current: string | null;
+  } | null;
 }>;
 // Variable: allBooksQuery
-// Query: *[_type == "book" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  description,  excerpt,  coverImage {   asset->{url},  alt },  "publicationDate": publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),    author->{    firstName,    lastName,    picture {   asset->{url},  alt }  }  }
+// Query: *[_type == "book" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  description,  excerpt,  coverImage {   asset->{ _id, _ref, url },  alt },  publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),    author->{ _id, firstName, lastName, picture {   asset->{ _id, _ref, url },  alt } }  }
 export type AllBooksQueryResult = Array<{
   _id: string;
   status: "draft" | "published";
@@ -754,6 +938,8 @@ export type AllBooksQueryResult = Array<{
   excerpt: string | null;
   coverImage: {
     asset: {
+      _id: string;
+      _ref: null;
       url: string | null;
     } | null;
     alt: string | null;
@@ -763,10 +949,13 @@ export type AllBooksQueryResult = Array<{
   amazonLink: string | null;
   date: string;
   author: {
+    _id: string;
     firstName: string | null;
     lastName: string | null;
     picture: {
       asset: {
+        _id: string;
+        _ref: null;
         url: string | null;
       } | null;
       alt: string | null;
@@ -774,7 +963,7 @@ export type AllBooksQueryResult = Array<{
   } | null;
 }>;
 // Variable: singleBookQuery
-// Query: *[_type == "book" && slug.current == $slug][0]{    content[]{ ..., markDefs[]{ ... } },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  description,  excerpt,  coverImage {   asset->{url},  alt },  "publicationDate": publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),    author->{    firstName,    lastName,    picture {   asset->{url},  alt }  }  }
+// Query: *[_type == "book" && slug.current == $slug][0]{    content[]{      ...,      markDefs[]{ ...,   _type,  _key,  "pageSlug": page->slug.current,  "blogSlug": blog->slug.current,  "devotionalSlug": devotional->slug.current,  "bookSlug": book->slug.current,  href,  openInNewTab }    },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  description,  excerpt,  coverImage {   asset->{ _id, _ref, url },  alt },  publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),    author->{ _id, firstName, lastName, picture {   asset->{ _id, _ref, url },  alt } }  }
 export type SingleBookQueryResult = {
   content: null;
   _id: string;
@@ -785,6 +974,8 @@ export type SingleBookQueryResult = {
   excerpt: string | null;
   coverImage: {
     asset: {
+      _id: string;
+      _ref: null;
       url: string | null;
     } | null;
     alt: string | null;
@@ -794,10 +985,13 @@ export type SingleBookQueryResult = {
   amazonLink: string | null;
   date: string;
   author: {
+    _id: string;
     firstName: string | null;
     lastName: string | null;
     picture: {
       asset: {
+        _id: string;
+        _ref: null;
         url: string | null;
       } | null;
       alt: string | null;
@@ -805,7 +999,7 @@ export type SingleBookQueryResult = {
   } | null;
 } | null;
 // Variable: moreBooksQuery
-// Query: *[_type == "book" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  description,  excerpt,  coverImage {   asset->{url},  alt },  "publicationDate": publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),    author->{    firstName,    lastName,    picture {   asset->{url},  alt }  }  }
+// Query: *[_type == "book" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  description,  excerpt,  coverImage {   asset->{ _id, _ref, url },  alt },  publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),    author->{ _id, firstName, lastName, picture {   asset->{ _id, _ref, url },  alt } }  }
 export type MoreBooksQueryResult = Array<{
   _id: string;
   status: "draft" | "published";
@@ -815,6 +1009,8 @@ export type MoreBooksQueryResult = Array<{
   excerpt: string | null;
   coverImage: {
     asset: {
+      _id: string;
+      _ref: null;
       url: string | null;
     } | null;
     alt: string | null;
@@ -824,10 +1020,13 @@ export type MoreBooksQueryResult = Array<{
   amazonLink: string | null;
   date: string;
   author: {
+    _id: string;
     firstName: string | null;
     lastName: string | null;
     picture: {
       asset: {
+        _id: string;
+        _ref: null;
         url: string | null;
       } | null;
       alt: string | null;
@@ -844,17 +1043,19 @@ export type BookSlugsResult = Array<{
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "\n  *[_id == \"siteSettings\"][0]{\n    title,\n    description,\n    ogImage { asset->{ url } },\n    backgroundImage { asset->{ url } },\n    logo { asset->{ url } }\n  }\n": SettingsQueryResult;
-    "\n  *[_type == 'page' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    \"pageBuilder\": pageBuilder[]{\n      ...,\n      _type == \"callToAction\" => { \n  link {\n    ...,\n    \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n  }\n },\n      _type == \"infoSection\" => {\n        content[]{\n          ...,\n          markDefs[]{ ..., \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n }\n        }\n      },\n    }\n  }\n": GetPageQueryResult;
-    "\n  *[(_type == \"page\" || _type == \"post\") && defined(slug.current)] | order(_type asc){\n    \"slug\": slug.current,\n    _type,\n    _updatedAt\n  }\n": SitemapDataResult;
-    "\n  *[_type == \"post\" && defined(slug.current)] | order(date desc, _updatedAt desc){\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage { \n  asset->{url},\n  alt\n },\n  \"date\": coalesce(date, _updatedAt),\n  \n  author->{\n    firstName,\n    lastName,\n    picture { \n  asset->{url},\n  alt\n }\n  }\n\n,\n    postType\n  }\n": AllPostsQueryResult;
-    "\n  *[_type == \"post\" && postType == $type && defined(slug.current)] | order(date desc, _updatedAt desc){\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage { \n  asset->{url},\n  alt\n },\n  \"date\": coalesce(date, _updatedAt),\n  \n  author->{\n    firstName,\n    lastName,\n    picture { \n  asset->{url},\n  alt\n }\n  }\n\n\n  }\n": PostsByTypeQueryResult;
-    "\n  *[_type == \"post\" && slug.current == $slug][0]{\n    content[]{\n      ...,\n      markDefs[]{ ..., \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n }\n    },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage { \n  asset->{url},\n  alt\n },\n  \"date\": coalesce(date, _updatedAt),\n  \n  author->{\n    firstName,\n    lastName,\n    picture { \n  asset->{url},\n  alt\n }\n  }\n\n,\n    postType\n  }\n": SinglePostQueryResult;
-    "\n  *[_type == \"post\" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc)[0...$limit]{\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage { \n  asset->{url},\n  alt\n },\n  \"date\": coalesce(date, _updatedAt),\n  \n  author->{\n    firstName,\n    lastName,\n    picture { \n  asset->{url},\n  alt\n }\n  }\n\n,\n    postType\n  }\n": MorePostsQueryResult;
-    "\n  *[_type == \"post\" && defined(slug.current)]{\n    \"slug\": slug.current,\n    postType\n  }\n": PostSlugsResult;
-    "\n  *[_type == \"book\" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  description,\n  excerpt,\n  coverImage { \n  asset->{url},\n  alt\n },\n  \"publicationDate\": publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \n  author->{\n    firstName,\n    lastName,\n    picture { \n  asset->{url},\n  alt\n }\n  }\n\n\n  }\n": AllBooksQueryResult;
-    "\n  *[_type == \"book\" && slug.current == $slug][0]{\n    content[]{ ..., markDefs[]{ ... } },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  description,\n  excerpt,\n  coverImage { \n  asset->{url},\n  alt\n },\n  \"publicationDate\": publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \n  author->{\n    firstName,\n    lastName,\n    picture { \n  asset->{url},\n  alt\n }\n  }\n\n\n  }\n": SingleBookQueryResult;
-    "\n  *[_type == \"book\" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  description,\n  excerpt,\n  coverImage { \n  asset->{url},\n  alt\n },\n  \"publicationDate\": publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \n  author->{\n    firstName,\n    lastName,\n    picture { \n  asset->{url},\n  alt\n }\n  }\n\n\n  }\n": MoreBooksQueryResult;
+    "\n  *[_id == \"siteSettings\"][0]{\n    title,\n    description,\n    ogImage { \n  asset->{ _id, _ref, url },\n  alt\n },\n    backgroundImage { \n  asset->{ _id, _ref, url },\n  alt\n },\n    logo { \n  asset->{ _id, _ref, url },\n  alt\n }\n  }\n": SettingsQueryResult;
+    "\n  *[(_type in [\"page\", \"blog\", \"devotional\", \"book\"]) && defined(slug.current)] | order(_type asc){\n    \"slug\": slug.current,\n    _type,\n    _updatedAt\n  }\n": SitemapDataResult;
+    "\n  *[_type == \"blog\" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage { \n  asset->{ _id, _ref, url },\n  alt\n },\n  publicationDate,\n  \n  author->{ _id, firstName, lastName, picture { \n  asset->{ _id, _ref, url },\n  alt\n } }\n\n\n  }\n": AllBlogsQueryResult;
+    "\n  *[_type == \"blog\" && slug.current == $slug][0]{\n    content[]{\n      ...,\n      markDefs[]{ ..., \n  _type,\n  _key,\n  \"pageSlug\": page->slug.current,\n  \"blogSlug\": blog->slug.current,\n  \"devotionalSlug\": devotional->slug.current,\n  \"bookSlug\": book->slug.current,\n  href,\n  openInNewTab\n }\n    },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage { \n  asset->{ _id, _ref, url },\n  alt\n },\n  publicationDate,\n  \n  author->{ _id, firstName, lastName, picture { \n  asset->{ _id, _ref, url },\n  alt\n } }\n\n\n  }\n": SingleBlogQueryResult;
+    "\n  *[_type == \"blog\" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage { \n  asset->{ _id, _ref, url },\n  alt\n },\n  publicationDate,\n  \n  author->{ _id, firstName, lastName, picture { \n  asset->{ _id, _ref, url },\n  alt\n } }\n\n\n  }\n": MoreBlogsQueryResult;
+    "\n  *[_type == \"blog\" && defined(slug.current)]{\n    \"slug\": slug.current\n  }\n": BlogSlugsResult;
+    "\n  *[_type == \"devotional\" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){\n    \n  _id,\n  _type,\n  title,\n  slug { current },\n  scriptureReference,\n  coverImage { \n  asset->{ _id, _ref, url },\n  alt\n },\n  publicationDate,\n  \n  author->{ _id, firstName, lastName, picture { \n  asset->{ _id, _ref, url },\n  alt\n } }\n\n\n  }\n": AllDevotionalsQueryResult;
+    "\n  *[_type == \"devotional\" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{\n    \n  _id,\n  _type,\n  title,\n  slug { current },\n  scriptureReference,\n  coverImage { \n  asset->{ _id, _ref, url },\n  alt\n },\n  publicationDate,\n  \n  author->{ _id, firstName, lastName, picture { \n  asset->{ _id, _ref, url },\n  alt\n } }\n\n\n  }\n": MoreDevotionalsQueryResult;
+    "\n  *[_type == \"devotional\" && slug.current == $slug][0]{\n    content[] {\n      _type,\n      _key,\n      style,\n      children[] { _type, _key, text, marks },\n      markDefs[] {\n        _type,\n        _key,\n        \"pageSlug\": page->slug.current,\n        \"blogSlug\": blog->slug.current,\n        \"devotionalSlug\": devotional->slug.current,\n        \"bookSlug\": book->slug.current,\n        href,\n        openInNewTab\n      }\n    },\n    \n  _id,\n  _type,\n  title,\n  slug { current },\n  scriptureReference,\n  coverImage { \n  asset->{ _id, _ref, url },\n  alt\n },\n  publicationDate,\n  \n  author->{ _id, firstName, lastName, picture { \n  asset->{ _id, _ref, url },\n  alt\n } }\n\n\n  }\n": SingleDevotionalQueryResult;
+    "\n  *[_type == \"devotional\" && defined(slug.current)]{\n    slug { current }\n  }\n": DevotionalSlugsResult;
+    "\n  *[_type == \"book\" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  description,\n  excerpt,\n  coverImage { \n  asset->{ _id, _ref, url },\n  alt\n },\n  publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \n  author->{ _id, firstName, lastName, picture { \n  asset->{ _id, _ref, url },\n  alt\n } }\n\n\n  }\n": AllBooksQueryResult;
+    "\n  *[_type == \"book\" && slug.current == $slug][0]{\n    content[]{\n      ...,\n      markDefs[]{ ..., \n  _type,\n  _key,\n  \"pageSlug\": page->slug.current,\n  \"blogSlug\": blog->slug.current,\n  \"devotionalSlug\": devotional->slug.current,\n  \"bookSlug\": book->slug.current,\n  href,\n  openInNewTab\n }\n    },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  description,\n  excerpt,\n  coverImage { \n  asset->{ _id, _ref, url },\n  alt\n },\n  publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \n  author->{ _id, firstName, lastName, picture { \n  asset->{ _id, _ref, url },\n  alt\n } }\n\n\n  }\n": SingleBookQueryResult;
+    "\n  *[_type == \"book\" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  description,\n  excerpt,\n  coverImage { \n  asset->{ _id, _ref, url },\n  alt\n },\n  publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \n  author->{ _id, firstName, lastName, picture { \n  asset->{ _id, _ref, url },\n  alt\n } }\n\n\n  }\n": MoreBooksQueryResult;
     "\n  *[_type == \"book\" && defined(slug.current)]{\n    \"slug\": slug.current\n  }\n": BookSlugsResult;
   }
 }

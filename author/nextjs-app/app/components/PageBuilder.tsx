@@ -1,40 +1,27 @@
 "use client";
 
-import { SanityDocument } from "next-sanity";
-import { useOptimistic } from "next-sanity/hooks";
 import Link from "next/link";
+import { useOptimistic } from "next-sanity/hooks";
+import type { Page } from "@/sanity.types";
+import { SanityDocument } from "next-sanity";
 
 import BlockRenderer from "@/app/components/BlockRenderer";
-import { GetPageQueryResult } from "@/sanity.types";
 import { dataAttr } from "@/sanity/lib/utils";
 import { studioUrl } from "@/sanity/lib/api";
-
-type PageBuilderPageProps = {
-  page: GetPageQueryResult;
-};
 
 type PageBuilderSection = {
   _key: string;
   _type: string;
 };
 
-type PageData = {
-  _id: string;
-  _type: string;
-  pageBuilder?: PageBuilderSection[];
+type PageBuilderPageProps = {
+  page: Page;
 };
-
-/**
- * The PageBuilder component is used to render the blocks from the `pageBuilder` field in the Page type in your Sanity Studio.
- */
 
 function renderSections(
   pageBuilderSections: PageBuilderSection[],
-  page: GetPageQueryResult,
+  page: Page,
 ) {
-  if (!page) {
-    return null;
-  }
   return (
     <div
       data-sanity={dataAttr({
@@ -43,7 +30,7 @@ function renderSections(
         path: `pageBuilder`,
       }).toString()}
     >
-      {pageBuilderSections.map((block: any, index: number) => (
+      {pageBuilderSections.map((block, index) => (
         <BlockRenderer
           key={block._key}
           index={index}
@@ -56,10 +43,7 @@ function renderSections(
   );
 }
 
-function renderEmptyState(page: GetPageQueryResult) {
-  if (!page) {
-    return null;
-  }
+function renderEmptyState(page: Page) {
   return (
     <div className="container">
       <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight sm:text-5xl">
@@ -85,34 +69,23 @@ function renderEmptyState(page: GetPageQueryResult) {
 export default function PageBuilder({ page }: PageBuilderPageProps) {
   const pageBuilderSections = useOptimistic<
     PageBuilderSection[] | undefined,
-    SanityDocument<PageData>
+    SanityDocument<Page>
   >(page?.pageBuilder || [], (currentSections, action) => {
-    // The action contains updated document data from Sanity
-    // when someone makes an edit in the Studio
+    if (action.id !== page._id) return currentSections;
 
-    // If the edit was to a different document, ignore it
-    if (action.id !== page?._id) {
-      return currentSections;
-    }
-
-    // If there are sections in the updated document, use them
     if (action.document.pageBuilder) {
-      // Reconcile References. https://www.sanity.io/docs/enabling-drag-and-drop#ffe728eea8c1
       return action.document.pageBuilder.map(
         (section) =>
           currentSections?.find((s) => s._key === section?._key) || section,
       );
     }
 
-    // Otherwise keep the current sections
     return currentSections;
   });
 
-  if (!page) {
+  if (!page || !pageBuilderSections?.length) {
     return renderEmptyState(page);
   }
 
-  return pageBuilderSections && pageBuilderSections.length > 0
-    ? renderSections(pageBuilderSections, page)
-    : renderEmptyState(page);
+  return renderSections(pageBuilderSections, page);
 }

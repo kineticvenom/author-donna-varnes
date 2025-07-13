@@ -1,12 +1,12 @@
 import { sanityFetch } from "@/sanity/lib/live";
-import { postsByTypeQuery } from "@/sanity/lib/queries";
+import { allDevotionalsQuery } from "@/sanity/lib/queries";
 import CoverImage from "@/app/components/CoverImage";
 import Link from "next/link";
 import DateComponent from "@/app/components/Date";
 
 export default async function DevotionalsPage() {
   const { data: posts } = await sanityFetch({
-    query: postsByTypeQuery,
+    query: allDevotionalsQuery,
     params: { type: "devotional" },
   });
 
@@ -18,7 +18,11 @@ export default async function DevotionalsPage() {
           <article key={post._id} className="max-w-2xl">
             <CoverImage image={post.coverImage} />
             <h2 className="text-3xl font-semibold mt-4">
-              <Link href={`/devotional/${post.slug}`}>{post.title}</Link>
+              {post.slug?.current ? (
+                <Link href={`/devotionals/${post.slug.current}`}>{post.title}</Link>
+              ) : (
+                <span>{post.title}</span> // Fallback if slug is missing
+              )}
             </h2>
             <DateComponent dateString={post.date} />
             {post.excerpt && (

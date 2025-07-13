@@ -1,67 +1,83 @@
 import type { Metadata } from "next";
-
 import PageBuilderPage from "@/app/components/PageBuilder";
 import { sanityFetch } from "@/sanity/lib/live";
 import { getPageQuery, sitemapData } from "@/sanity/lib/queries";
-import { GetPageQueryResult } from "@/sanity.types";
+import type { Page } from "@/sanity.types";
 import { notFound } from "next/navigation";
 
+// Define the shape of params for clarity
+interface PageParams {
+  slug: string;
+}
 
-/**
- * Generate the static params for the page.
- * Learn more: https://nextjs.org/docs/app/api-reference/functions/generate-static-params
- */
-export async function generateStaticParams() {
-  const result = await sanityFetch({
+// Define the shape of a sitemap page
+interface SitemapPage {
+  slug: string | null;
+}
+
+// Generate static parameters for dynamic routes
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  const { data: pages }: { data: SitemapPage[] } = await sanityFetch({
     query: sitemapData,
     perspective: "published",
     stega: false,
   });
-  const pages = result.data as { slug: string | null }[];
 
   return pages
     .filter((page): page is { slug: string } => !!page.slug)
     .map((page) => ({ slug: page.slug }));
 }
 
-/**
- * Generate metadata for the page.
- * Learn more: https://nextjs.org/docs/app/api-reference/functions/generate-metadata#generatemetadata-function
- */
+// Generate metadata for the page
 export async function generateMetadata({
   params,
 }: {
-  // params is now a Promise that resolves to { slug: string }
-  params: Promise<{ slug: string }>;
+  params: PageParams;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug } = params;
 
-  const { data: page } = await sanityFetch({
+  const { data: page }: { data: Page | null } = await sanityFetch({
     query: getPageQuery,
     params: { slug },
-    stega: false,
   });
 
+  if (!page) {
+    return {
+      title: "Page Not Found",
+      description: "The requested page could not be found.",
+    };
+  }
+
   return {
-    title: page?.name,
-    description: page?.heading,
+    title: page.name ?? "Untitled Page",
+    description: page.heading ?? "",
   };
 }
 
-export default async function Page({
-  params,
-}: {
-  // params must be awaited to extract slug
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
+// Generate sitemap (optional, for SEO or sitemap generation)
+export async function generateSitemap(): Promise<{ url: string }[]> {
+  const { data: pages }: { data: SitemapPage[] } = await sanityFetch({
+    query: sitemapData,
+    perspective: "published",
+    stega: false,
+  });
 
-  const { data: page } = await sanityFetch({
+  return pages
+    .filter((page): page is { slug: string } => !!page.slug)
+    .map((page) => ({ url: `/${page.slug}` }));
+}
+
+// Page component for dynamic route
+export default async function PageRoute({ params }: { params: PageParams }) {
+  const { slug } = params;
+
+  const { data: page }: { data: Page | null } = await sanityFetch({
     query: getPageQuery,
     params: { slug },
   });
+
   if (!page?._id) {
-    return notFound();
+    notFound();
   }
 
   return (
@@ -76,7 +92,7 @@ export default async function Page({
           </p>
         </div>
       </div>
-      <PageBuilderPage page={page as GetPageQueryResult} />
+      <PageBuilderPage page={page} />
     </div>
   );
 }

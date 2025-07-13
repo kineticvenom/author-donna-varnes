@@ -1,25 +1,26 @@
-import { defineQuery } from "next-sanity";
+import { defineQuery } from 'next-sanity';
 
-// Common reusable field blocks
 const imageFields = /* groq */ `
-  asset->{url},
+  asset->{ _id, _ref, url },
   alt
 `;
 
 const authorFields = /* groq */ `
-  author->{
-    firstName,
-    lastName,
-    picture { ${imageFields} }
-  }
+  author->{ _id, firstName, lastName, picture { ${imageFields} } }
 `;
 
 const linkReference = /* groq */ `
-  _type == "link" => {
-    "page": page->slug.current,
-    "post": post->slug.current
-  }
+  _type,
+  _key,
+  "pageSlug": page->slug.current,
+  "blogSlug": blog->slug.current,
+  "devotionalSlug": devotional->slug.current,
+  "bookSlug": book->slug.current,
+  href,
+  openInNewTab
 `;
+
+
 
 const linkFields = /* groq */ `
   link {
@@ -28,14 +29,25 @@ const linkFields = /* groq */ `
   }
 `;
 
-const basePostFields = /* groq */ `
+const baseBlogFields = /* groq */ `
   _id,
   "status": select(_originalId in path("drafts.**") => "draft", "published"),
   "title": coalesce(title, "Untitled"),
   "slug": slug.current,
   excerpt,
   coverImage { ${imageFields} },
-  "date": coalesce(date, _updatedAt),
+  publicationDate,
+  ${authorFields}
+`;
+
+const baseDevotionalFields = /* groq */ `
+  _id,
+  _type,
+  title,
+  slug { current },
+  scriptureReference,
+  coverImage { ${imageFields} },
+  publicationDate,
   ${authorFields}
 `;
 
@@ -47,7 +59,7 @@ const baseBookFields = /* groq */ `
   description,
   excerpt,
   coverImage { ${imageFields} },
-  "publicationDate": publicationDate,
+  publicationDate,
   isbn,
   amazonLink,
   "date": coalesce(date, _updatedAt),
@@ -59,14 +71,14 @@ export const settingsQuery = defineQuery(`
   *[_id == "siteSettings"][0]{
     title,
     description,
-    ogImage { asset->{ url } },
-    backgroundImage { asset->{ url } },
-    logo { asset->{ url } }
+    ogImage { ${imageFields} },
+    backgroundImage { ${imageFields} },
+    logo { ${imageFields} }
   }
 `);
 
 // Page Queries
-export const getPageQuery = defineQuery(`
+export const getPageQuery = `
   *[_type == 'page' && slug.current == $slug][0]{
     _id,
     _type,
@@ -76,62 +88,121 @@ export const getPageQuery = defineQuery(`
     subheading,
     "pageBuilder": pageBuilder[]{
       ...,
-      _type == "callToAction" => { ${linkFields} },
-      _type == "infoSection" => {
-        content[]{
+      _type == "callToAction" => {
+        link {
           ...,
-          markDefs[]{ ..., ${linkReference} }
+          _type == "link" => {
+            _type,
+            _key,
+            "pageSlug": page->slug.current,
+            "blogSlug": blog->slug.current,
+            "devotionalSlug": devotional->slug.current,
+            "bookSlug": book->slug.current,
+            href,
+            openInNewTab
+          }
         }
       },
+      _type == "infoSection" => {
+        content[] {
+          ...,
+          markDefs[] {
+            ...,
+            _type == "link" => {
+              _type,
+              _key,
+              "pageSlug": page->slug.current,
+              "blogSlug": blog->slug.current,
+              "devotionalSlug": devotional->slug.current,
+              "bookSlug": book->slug.current,
+              href,
+              openInNewTab
+            }
+          }
+        }
+      }
     }
   }
-`);
+`;
+
 
 // Sitemap Query
 export const sitemapData = defineQuery(`
-  *[(_type == "page" || _type == "post") && defined(slug.current)] | order(_type asc){
+  *[(_type in ["page", "blog", "devotional", "book"]) && defined(slug.current)] | order(_type asc){
     "slug": slug.current,
     _type,
     _updatedAt
   }
 `);
 
-// Posts Queries with Post Type Filtering
-export const allPostsQuery = defineQuery(`
-  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc){
-    ${basePostFields},
-    postType
+// Blog Queries
+export const allBlogsQuery = defineQuery(`
+  *[_type == "blog" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){
+    ${baseBlogFields}
   }
 `);
 
-export const postsByTypeQuery = defineQuery(`
-  *[_type == "post" && postType == $type && defined(slug.current)] | order(date desc, _updatedAt desc){
-    ${basePostFields}
-  }
-`);
-
-export const singlePostQuery = defineQuery(`
-  *[_type == "post" && slug.current == $slug][0]{
+export const singleBlogQuery = defineQuery(`
+  *[_type == "blog" && slug.current == $slug][0]{
     content[]{
       ...,
       markDefs[]{ ..., ${linkReference} }
     },
-    ${basePostFields},
-    postType
+    ${baseBlogFields}
   }
 `);
 
-export const morePostsQuery = defineQuery(`
-  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc)[0...$limit]{
-    ${basePostFields},
-    postType
+export const moreBlogsQuery = defineQuery(`
+  *[_type == "blog" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{
+    ${baseBlogFields}
   }
 `);
 
-export const postSlugs = defineQuery(`
-  *[_type == "post" && defined(slug.current)]{
-    "slug": slug.current,
-    postType
+export const blogSlugs = defineQuery(`
+  *[_type == "blog" && defined(slug.current)]{
+    "slug": slug.current
+  }
+`);
+
+// Devotional Queries
+export const allDevotionalsQuery = defineQuery(`
+  *[_type == "devotional" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){
+    ${baseDevotionalFields}
+  }
+`);
+
+export const moreDevotionalsQuery = defineQuery(`
+  *[_type == "devotional" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{
+    ${baseDevotionalFields}
+  }
+`);
+
+export const singleDevotionalQuery = defineQuery(`
+  *[_type == "devotional" && slug.current == $slug][0]{
+    content[] {
+      _type,
+      _key,
+      style,
+      children[] { _type, _key, text, marks },
+      markDefs[] {
+        _type,
+        _key,
+        "pageSlug": page->slug.current,
+        "blogSlug": blog->slug.current,
+        "devotionalSlug": devotional->slug.current,
+        "bookSlug": book->slug.current,
+        href,
+        openInNewTab
+      }
+    },
+    ${baseDevotionalFields}
+  }
+`);
+
+
+export const devotionalSlugs = defineQuery(`
+  *[_type == "devotional" && defined(slug.current)]{
+    slug { current }
   }
 `);
 
@@ -144,7 +215,10 @@ export const allBooksQuery = defineQuery(`
 
 export const singleBookQuery = defineQuery(`
   *[_type == "book" && slug.current == $slug][0]{
-    content[]{ ..., markDefs[]{ ... } },
+    content[]{
+      ...,
+      markDefs[]{ ..., ${linkReference} }
+    },
     ${baseBookFields}
   }
 `);
