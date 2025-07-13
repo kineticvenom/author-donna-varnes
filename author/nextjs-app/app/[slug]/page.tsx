@@ -55,17 +55,17 @@ export async function generateMetadata({
 }
 
 // Generate sitemap (optional, for SEO or sitemap generation)
-export async function generateSitemap(): Promise<{ url: string }[]> {
-  const { data: pages }: { data: SitemapPage[] } = await sanityFetch({
-    query: sitemapData,
-    perspective: "published",
-    stega: false,
-  });
+// export async function generateSitemap(): Promise<{ url: string }[]> {
+//   const { data: pages }: { data: SitemapPage[] } = await sanityFetch({
+//     query: sitemapData,
+//     perspective: "published",
+//     stega: false,
+//   });
 
-  return pages
-    .filter((page): page is { slug: string } => !!page.slug)
-    .map((page) => ({ url: `/${page.slug}` }));
-}
+//   return pages
+//     .filter((page): page is { slug: string } => !!page.slug)
+//     .map((page) => ({ url: `/${page.slug}` }));
+// }
 
 // Page component for dynamic route
 export default async function PageRoute({ params }: { params: PageParams }) {
