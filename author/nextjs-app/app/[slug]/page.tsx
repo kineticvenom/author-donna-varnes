@@ -4,7 +4,8 @@ import PageBuilderPage from "@/app/components/PageBuilder";
 import { sanityFetch } from "@/sanity/lib/live";
 import { getPageQuery, sitemapData } from "@/sanity/lib/queries";
 import { GetPageQueryResult } from "@/sanity.types";
-import { PageOnboarding } from "@/app/components/Onboarding";
+import { notFound } from "next/navigation";
+
 
 /**
  * Generate the static params for the page.
@@ -59,13 +60,8 @@ export default async function Page({
     query: getPageQuery,
     params: { slug },
   });
-
   if (!page?._id) {
-    return (
-      <div className="py-40">
-        <PageOnboarding />
-      </div>
-    );
+    return notFound();
   }
 
   return (
