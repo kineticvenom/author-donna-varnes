@@ -1,31 +1,13 @@
 import type { Metadata } from "next";
 import PageBuilderPage from "@/app/components/PageBuilder";
 import { sanityFetch } from "@/sanity/lib/live";
-import { getPageQuery, sitemapData } from "@/sanity/lib/queries";
+import { getPageQuery } from "@/sanity/lib/queries";
 import type { Page } from "@/sanity.types";
 import { notFound } from "next/navigation";
 
 // Define the shape of params for clarity
 interface PageParams {
   slug: string;
-}
-
-// Define the shape of a sitemap page
-interface SitemapPage {
-  slug: string | null;
-}
-
-// Generate static parameters for dynamic routes
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const { data: pages }: { data: SitemapPage[] } = await sanityFetch({
-    query: sitemapData,
-    perspective: "published",
-    stega: false,
-  });
-
-  return pages
-    .filter((page): page is { slug: string } => !!page.slug)
-    .map((page) => ({ slug: page.slug }));
 }
 
 // Generate metadata for the page
@@ -53,19 +35,6 @@ export async function generateMetadata({
     description: page.heading ?? "",
   };
 }
-
-// Generate sitemap (optional, for SEO or sitemap generation)
-// export async function generateSitemap(): Promise<{ url: string }[]> {
-//   const { data: pages }: { data: SitemapPage[] } = await sanityFetch({
-//     query: sitemapData,
-//     perspective: "published",
-//     stega: false,
-//   });
-
-//   return pages
-//     .filter((page): page is { slug: string } => !!page.slug)
-//     .map((page) => ({ url: `/${page.slug}` }));
-// }
 
 // Page component for dynamic route
 export default async function PageRoute({ params }: { params: PageParams }) {
