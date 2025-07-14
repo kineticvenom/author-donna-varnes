@@ -9,6 +9,7 @@ import type { SettingsQueryResult } from "@/types/settings";
 import { AllBooks } from "./components/Books";
 import { AllPosts } from "@/app/components/Posts";
 
+
 export default async function Page() {
   const result = await sanityFetch({
     query: settingsQuery,
@@ -34,7 +35,7 @@ export default async function Page() {
       <div className="text-center py-20">
         <Image
           src={src}
-          alt={logoSource?.alt || "Logo"}    // use CMS alt or fallback
+          alt={logoSource?.alt || 'Logo'}    // use CMS alt or fallback
           width={300}                        // required for remote images :contentReference[oaicite:2]{index=2}
           height={80}
           className="object-contain h-20 sm:h-24 md:h-28 lg:h-32"

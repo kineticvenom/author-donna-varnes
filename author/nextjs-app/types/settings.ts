@@ -4,11 +4,15 @@ export type SettingsQueryResult = {
   ogImage?: {
     asset?: { url: string | null };
     metadataBase?: string;
+    alt?: string;
   } | null;
   backgroundImage?: {
     asset?: { url: string | null };
+    alt?: string;
   } | null;
   logo?: {
     asset?: { url: string | null };
+    alt?: string;
   } | null;
+  
 };
