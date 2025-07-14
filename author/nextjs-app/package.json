@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typegen": "sanity typegen generate"
+    "typegen":  "sanity typegen generate --schema schema.json --output sanity.types.ts"
   },
   "dependencies": {
     "@sanity/client": "^6.27.2",
@@ -28,7 +28,6 @@
   },
   "devDependencies": {
     "@sanity/cli": "^3.97.1",
-    "@sanity/codegen": "^3.97.1",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@types/node": "^20.17.17",
     "@types/react": "^18.3.18",
@@ -36,7 +35,6 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "^15.1.6",
     "postcss": "^8.4.49",
-    "sanity-codegen": "^1.0.0-alpha.45",
     "tailwindcss": "^3.4.15",
     "typescript": "5.6.3"
   }

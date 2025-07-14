@@ -4,21 +4,22 @@ import { sanityFetch } from "@/sanity/lib/live";
 import { getPageQuery } from "@/sanity/lib/queries";
 import type { Page } from "@/sanity.types";
 import { notFound } from "next/navigation";
+import { PageProps } from "@/.next/types/app/page";
 
-// Define the shape of params for clarity
-interface PageParams {
-  slug: string;
-}
+// Define the shape of dynamic route params
+type Props = {
+  params: Promise<{ slug: string }>;
+};
 
-// Generate metadata for the page
-export async function generateMetadata({
-  params,
-}: {
-  params: PageParams;
-}): Promise<Metadata> {
-  const { slug } = params;
+// Generate metadata for the dynamic page
+export async function generateMetadata(
+  { params }: Props
+): Promise<Metadata> {
+  // Await the dynamic params
+  const { slug } = await params;
 
-  const { data: page }: { data: Page | null } = await sanityFetch({
+  // Fetch your page data
+  const { data: page } = await sanityFetch({
     query: getPageQuery,
     params: { slug },
   });
@@ -36,17 +37,18 @@ export async function generateMetadata({
   };
 }
 
-// Page component for dynamic route
-export default async function PageRoute({ params }: { params: PageParams }) {
-  const { slug } = params;
+// Render the dynamic route page
+export default async function PageRoute({ params }: Props) {
+  const { slug } = await params;
 
-  const { data: page }: { data: Page | null } = await sanityFetch({
+  // Fetch page data
+  const { data: page } = await sanityFetch({
     query: getPageQuery,
     params: { slug },
   });
 
   if (!page?._id) {
-    notFound();
+    return notFound();
   }
 
   return (

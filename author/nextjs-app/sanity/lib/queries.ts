@@ -1,9 +1,16 @@
 import { defineQuery } from 'next-sanity';
 
-const imageFields = /* groq */ `
-  asset->{ _id, _ref, url },
+import groq from 'groq';
+
+export const imageFields = /* groq */ `
+  asset->{
+    _id,
+    _ref,
+    url
+  },
   alt
 `;
+
 
 const authorFields = /* groq */ `
   author->{ _id, firstName, lastName, picture { ${imageFields} } }

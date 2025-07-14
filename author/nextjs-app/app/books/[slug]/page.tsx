@@ -2,6 +2,7 @@ import { sanityFetch } from "@/sanity/lib/live";
 import { notFound } from "next/navigation";
 import { PortableText } from "@portabletext/react";
 import DateComponent from "@/app/components/Date";
+import CoverImage from "@/app/components/CoverImage";
 
 export default async function BookPage({
   params,
@@ -62,20 +63,18 @@ export default async function BookPage({
         )}
 
         {book.coverImage?.asset?.url && (
-          <img
-            src={book.coverImage.asset.url}
-            alt={book.title}
-            className="w-full max-w-2xl mx-auto mt-6 rounded-md"
+          <CoverImage
+            image={book.coverImage}
+            
           />
         )}
 
         {book.author && (
           <div className="mt-4 flex items-center gap-3">
             {book.author.picture?.asset?.url && (
-              <img
-                src={book.author.picture.asset.url}
-                alt={`${book.author.firstName} ${book.author.lastName}`}
-                className="h-10 w-10 rounded-full object-cover"
+              <CoverImage
+                image={book.author.picture.asset.url}
+              
               />
             )}
             <span className="text-sm text-gray-600">

@@ -8,11 +8,25 @@ interface CoverImageProps {
 }
 
 export default function CoverImage({ image: source, priority }: CoverImageProps) {
-  const hasValidImage = source?.asset?._ref;
-  const imageUrl = hasValidImage
-    ? urlForImage(source)?.auto("format").width(300).height(450).url()
-    : null;
+  
+  // Extract the two possible sources of truth
+  const ref = source?.asset?._ref as string | undefined;
+  const originalUrl = source?.asset?.url as string | undefined;
 
+ // Build or fallback
+ let imageUrl: string | null = null;
+  if (ref) {
+    imageUrl = urlForImage(source)
+      ?.auto("format")
+      .width(300)
+      .height(450)
+      .url() || null;
+  } else if (originalUrl) {
+    imageUrl = originalUrl;
+  }
+
+  // Whether we have _any_ valid URL
+  const hasValidImage = Boolean(imageUrl);
   console.log('CoverImage Debug:', { source, hasValidImage, imageUrl });
 
   if (!imageUrl || !hasValidImage) {

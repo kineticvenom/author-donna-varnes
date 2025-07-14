@@ -1,11 +1,13 @@
+// app/page.tsx
 import { Suspense } from "react";
-import Link from "next/link";
+import Image from "next/image";
+import logoFallback from "@/public/images/Logo.png";
 import { sanityFetch } from "@/sanity/lib/live";
-import { settingsQuery } from "@/sanity/lib/queries";
-
-import { AllPosts } from "@/app/components/Posts";
+import { settingsQuery } from "@/sanity/lib/queries"; 
+import { urlForImage } from "@/sanity/lib/utils";
+import type { SettingsQueryResult } from "@/types/settings";
 import { AllBooks } from "./components/Books";
-import { SettingsQueryResult } from "@/types/settings";
+import { AllPosts } from "@/app/components/Posts";
 
 export default async function Page() {
   const result = await sanityFetch({
@@ -13,44 +15,37 @@ export default async function Page() {
     stega: false,
   });
   const settings = result.data as SettingsQueryResult;
-  const logo = settings?.logo?.asset?.url || "/images/Logo.png";
+  
+
+  // 1. Extract the full Sanity image object
+  const logoSource = settings.logo;   // SanityImageSource | undefined
+
+  // 2. Build the URL only if we have a valid source
+  const builder = logoSource ? urlForImage(logoSource) : undefined;  // ImageUrlBuilder | undefined
+  const logoUrl = builder
+    ? builder.auto("format").width(300).height(80).url()
+    : undefined;
+
+  // 3. Choose between the Sanity URL or the static import
+  const src = logoUrl ?? logoFallback;
+
   return (
     <>
-      <div className="bg-gradient-to-r from-red-200 from-0% via-white via-40%  relative">
-        <div className="bg-gradient-to-b from-white w-full h-40 absolute top-0"></div>
-        <div className="bg-gradient-to-t from-white w-full h-40 absolute bottom-0"></div>
-        <div className="container relative">
-          <div className="mx-auto max-w-2xl py-20 lg:max-w-4xl lg:px-12 text-center">
-            <div className="flex flex-col gap-4 items-center">
-              <div className=" text-md leading-6 prose uppercase">
-                
-              </div>
-              <img 
-                src={logo}
-                alt="Logo"
-                className="h-20 sm:h-24 md:h-28 lg:h-32 object-contain"
-                />
-            </div>
-            <div className="mt-6 space-y-6 prose sm:prose-lg md:prose-xl lg:prose-2xl text-gray-700">
-            </div>
-            <div className="flex items-center flex-col gap-4">
-            </div>
-          </div>
-        </div>
+      <div className="text-center py-20">
+        <Image
+          src={src}
+          alt={logoSource?.alt || "Logo"}    // use CMS alt or fallback
+          width={300}                        // required for remote images :contentReference[oaicite:2]{index=2}
+          height={80}
+          className="object-contain h-20 sm:h-24 md:h-28 lg:h-32"
+        />
       </div>
-      <div className="border-t border-gray-10 bg-color-grey">
-        <div className="container">
-          <aside className="py-12 sm:py-20">
-            <Suspense>{await AllBooks()}</Suspense>
-          </aside>
-        </div>
+
+      <div className="border-t border-gray-100">
+        <Suspense>{await AllBooks()}</Suspense>
       </div>
-      <div className="border-t border-gray-10">
-        <div className="container">
-          <aside className="py-12 sm:py-20">
-            <Suspense>{await AllPosts()}</Suspense>
-          </aside>
-        </div>
+      <div className="border-t border-gray-100">
+        <Suspense>{await AllPosts()}</Suspense>
       </div>
     </>
   );

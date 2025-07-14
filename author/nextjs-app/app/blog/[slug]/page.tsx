@@ -98,10 +98,8 @@ export default async function PostPage(props: Props) {
                 {post.author?.firstName && post.author?.lastName && (
                   <div className="mt-4 flex items-center gap-3">
                     {post.author.picture?.asset?.url && (
-                      <img
-                        src={post.author.picture.asset.url}
-                        alt={`${post.author.firstName} ${post.author.lastName}`}
-                        className="h-10 w-10 rounded-full object-cover"
+                      <CoverImage
+                        image={post.author.picture.asset.url}
                       />
                     )}
                     <span className="text-sm text-gray-600">

@@ -1,60 +1,67 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+import { headers } from "next/headers";
 import { sanityFetch } from "@/sanity/lib/live";
 import { sitemapData } from "@/sanity/lib/queries";
-import { headers } from "next/headers";
-
-/**
- * This file creates a sitemap (sitemap.xml) for the application. Learn more about sitemaps in Next.js here: https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap
- * Be sure to update the `changeFrequency` and `priority` values to match your application's content.
- */
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const allPostsAndPages = await sanityFetch({
-    query: sitemapData,
-  });
+  // Fetch all items from Sanity
+  const result = await sanityFetch({ query: sitemapData });
+  const items = result?.data ?? [];
+
+  // Build origin (protocol + host)
   const headersList = await headers();
-  const sitemap: MetadataRoute.Sitemap = [];
-  const domain: String = headersList.get("host") as string;
-  sitemap.push({
-    url: domain as string,
-    lastModified: new Date(),
-    priority: 1,
-    changeFrequency: "monthly",
-  });
+  const host = headersList.get("host")!;
+  const proto = headersList.get("x-forwarded-proto") ?? "https";
+  const origin = `${proto}://${host}`;
 
-  if (allPostsAndPages != null && allPostsAndPages.data.length != 0) {
-    let priority: number;
-    let changeFrequency:
-      | "monthly"
-      | "always"
-      | "hourly"
-      | "daily"
-      | "weekly"
-      | "yearly"
-      | "never"
-      | undefined;
+  // Start with the root URL
+  const sitemap: MetadataRoute.Sitemap = [
+    {
+      url: origin,
+      lastModified: new Date(),
+      priority: 1,
+      changeFrequency: "monthly",
+    },
+  ];
+
+  // Map each Sanity document to a sitemap entry
+  for (const p of items) {
     let url: string;
+    let priority: number;
+    let changeFrequency: MetadataRoute.Sitemap[0]["changeFrequency"];
 
-    for (const p of allPostsAndPages.data) {
-      switch (p._type) {
-        case "page":
-          priority = 0.8;
-          changeFrequency = "monthly";
-          url = `${domain}/${p.slug}`;
-          break;
-        case "post":
-          priority = 0.5;
-          changeFrequency = "never";
-          url = `${domain}/posts/${p.slug}`;
-          break;
-      }
-      sitemap.push({
-        lastModified: p._updatedAt || new Date(),
-        priority,
-        changeFrequency,
-        url,
-      });
+    switch (p._type) {
+      case "page":
+        priority = 0.8;
+        changeFrequency = "monthly";
+        url = `${origin}/${p.slug}`;
+        break;
+      case "book":
+        priority = 0.7;
+        changeFrequency = "weekly";
+        url = `${origin}/books/${p.slug}`;
+        break;
+      case "blog":
+        priority = 0.6;
+        changeFrequency = "daily";
+        url = `${origin}/blog/${p.slug}`;
+        break;
+      case "devotional":
+        priority = 0.5;
+        changeFrequency = "yearly";
+        url = `${origin}/devotionals/${p.slug}`;
+        break;
+      default:
+        // Skip any types you’re not explicitly handling
+        continue;
     }
+
+    sitemap.push({
+      url,
+      lastModified: p._updatedAt ? new Date(p._updatedAt) : new Date(),
+      priority,
+      changeFrequency,
+    });
   }
 
   return sitemap;

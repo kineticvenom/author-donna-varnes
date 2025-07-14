@@ -3,6 +3,7 @@ import Link from "next/link";
 import { sanityFetch } from "@/sanity/lib/live";
 import { settingsQuery } from "@/sanity/lib/queries";
 import type { SettingsQueryResult } from "@/types/settings";
+import { Image } from "next-sanity/image";
 
 export default async function Header() {
   // 1. No generic here—just call sanityFetch
@@ -22,7 +23,7 @@ export default async function Header() {
       <div className="container py-6 sm:px-6">
         <div className="flex items-center justify-between gap-5">
           <Link href="/" className="flex items-center gap-2">
-            <img
+            <Image
               src={logo}
               alt="Logo"
               className="h-10 sm:h-12 object-contain"
