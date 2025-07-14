@@ -12,7 +12,7 @@ const Book = ({ book }: { book: BookType }) => {
 
   return (
     <article key={_id} className="flex flex-row items-start justify-between">
-      <CoverImage image={coverImage} />
+      <CoverImage image={coverImage ?? null} />
 
       <div className="flex flex-col w-2/3 ml-5">
         <h3 className="mt-3 text-2xl font-semibold">

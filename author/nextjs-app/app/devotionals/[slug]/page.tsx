@@ -1,7 +1,7 @@
 
 
 import type { Metadata, ResolvingMetadata } from "next";
-import { notFound } from "next/navigation";
+
 import { type PortableTextBlock } from "next-sanity";
 import { Suspense } from "react";
 import DateComponent from "@/app/components/Date";
@@ -79,8 +79,12 @@ export default async function DevotionalPage(props: Props) {
     params,
   });
 
-  if (!post) {
-    return notFound();
+  if (!post?._id) {
+    return (<div className="text-center py-20">
+        <h1>404 - Page Not Found</h1>
+        <p>The page "{params.slug}" does not exist.</p>
+      </div>
+    );
   }
 
   const hasContent = Array.isArray(post.content) && post.content.length > 0;

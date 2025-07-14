@@ -1,53 +1,58 @@
-// app/page.tsx
 import { Suspense } from "react";
 import Image from "next/image";
 import logoFallback from "@/public/images/Logo.png";
 import { sanityFetch } from "@/sanity/lib/live";
-import { settingsQuery } from "@/sanity/lib/queries"; 
+import { settingsQuery } from "@/sanity/lib/queries";
 import { urlForImage } from "@/sanity/lib/utils";
 import type { SettingsQueryResult } from "@/types/settings";
 import { AllBooks } from "./components/Books";
 import { AllPosts } from "@/app/components/Posts";
-
 
 export default async function Page() {
   const result = await sanityFetch({
     query: settingsQuery,
     stega: false,
   });
+  console.log("Settings query result:", result);
   const settings = result.data as SettingsQueryResult;
-  
+  console.log("Settings:", settings);
 
-  // 1. Extract the full Sanity image object
-  const logoSource = settings.logo;   // SanityImageSource | undefined
+  const logoSource = settings.logo; // SanityImageSource | undefined
+  console.log("Logo source:", logoSource);
 
-  // 2. Build the URL only if we have a valid source
-  const builder = logoSource ? urlForImage(logoSource) : undefined;  // ImageUrlBuilder | undefined
-  const logoUrl = builder
-    ? builder.auto("format").width(300).height(80).url()
-    : undefined;
+  const logoUrl = logoSource && logoSource.asset?.url
+    ? urlForImage(logoSource).auto("format").width(300).height(80).url()
+    : null;
 
-  // 3. Choose between the Sanity URL or the static import
-  const src = logoUrl ?? logoFallback;
+  console.log("Logo URL:", logoUrl);
 
   return (
     <>
       <div className="text-center py-20">
-        <Image
-          src={src}
-          alt={logoSource?.alt || 'Logo'}    // use CMS alt or fallback
-          width={300}                        // required for remote images :contentReference[oaicite:2]{index=2}
-          height={80}
-          className="object-contain h-20 sm:h-24 md:h-28 lg:h-32"
-        />
+        {logoUrl ? (
+          <Image
+            src={logoUrl}
+            alt={logoSource?.alt || "Logo"}
+            width={300}
+            height={80}
+            className="object-contain h-20 sm:h-24 md:h-28 lg:h-32"
+          />
+        ) : (
+          <Image
+            src={logoFallback}
+            alt="Logo"
+            width={300}
+            height={80}
+            className="object-contain h-20 sm:h-24 md:h-28 lg:h-32"
+          />
+        )}
       </div>
-
-      <div className="border-t border-gray-100">
-        <Suspense>{await AllBooks()}</Suspense>
-      </div>
-      <div className="border-t border-gray-100">
-        <Suspense>{await AllPosts()}</Suspense>
-      </div>
+      <Suspense fallback={<div>Loading books...</div>}>
+        <AllBooks />
+      </Suspense>
+      <Suspense fallback={<div>Loading posts...</div>}>
+        <AllPosts />
+      </Suspense>
     </>
   );
 }

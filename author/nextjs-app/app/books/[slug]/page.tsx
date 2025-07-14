@@ -45,7 +45,11 @@ export default async function BookPage({
     params: { slug },
   });
 
-  if (!book) return notFound();
+  if (!book) return (<div className="text-center py-20">
+        <h1>404 - Page Not Found</h1>
+        <p>The page "{slug}" does not exist.</p>
+      </div>
+    );
 
   return (
     <div className="container mx-auto py-12">

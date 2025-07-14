@@ -24,10 +24,6 @@ export async function generateMetadata(
     params: { slug },
   });
 
-  if (!page) {
-    return notFound();
-  }
-
   return {
     title: page.name ?? "Untitled Page",
     description: page.heading ?? "",
@@ -44,9 +40,6 @@ export default async function PageRoute({ params }: Props) {
     params: { slug },
   });
 
-  if (!page?._id) {
-    return notFound();
-  }
 
   return (
     <div className="my-12 lg:my-24">

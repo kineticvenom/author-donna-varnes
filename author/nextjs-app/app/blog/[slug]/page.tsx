@@ -69,7 +69,11 @@ export default async function PostPage(props: Props) {
   });
 
   if (!post?._id) {
-    return notFound();
+    return (<div className="text-center py-20">
+        <h1>404 - Page Not Found</h1>
+        <p>The page "{params.slug}" does not exist.</p>
+      </div>
+    );
   }
   const hasContent = Array.isArray(post.content) && post.content.length > 0;
   return (
