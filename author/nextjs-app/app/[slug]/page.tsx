@@ -25,10 +25,7 @@ export async function generateMetadata(
   });
 
   if (!page) {
-    return {
-      title: "Page Not Found",
-      description: "The requested page could not be found.",
-    };
+    return notFound();
   }
 
   return {
