@@ -2,8 +2,9 @@ import Link from "next/link";
 import { sanityFetch } from "@/sanity/lib/live";
 import { settingsQuery } from "@/sanity/lib/queries";
 import type { SettingsQueryResult } from "@/types/settings";
-import { Image } from "next-sanity/image";
+import Image from "next/image";
 import { urlForImage } from "@/sanity/lib/utils";
+import logoFallback from "@/public/images/Logo.png";
 
 export default async function Header() {
   const result = await sanityFetch({
@@ -17,7 +18,7 @@ export default async function Header() {
   const logoUrl = builder
     ? builder.auto("format").width(300).height(80).url()
     : undefined;
-  const src = logoUrl ?? "/images/Logo.png"; // Use string path for fallback
+  const src = logoUrl; // Use string path for fallback
 
   return (
     <header className="fixed z-50 h-24 inset-0 bg-white/80 flex items-center backdrop-blur-lg">
@@ -25,7 +26,7 @@ export default async function Header() {
         <div className="flex items-center justify-between gap-5">
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src={src}
+              src={logoFallback} // Fallback to local image if Sanity image is not available
               alt="Logo"
               className="h-10 sm:h-12 object-contain"
               width={300} // Match width in urlForImage

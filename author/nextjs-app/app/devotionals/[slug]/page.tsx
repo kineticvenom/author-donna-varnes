@@ -82,7 +82,7 @@ export default async function DevotionalPage(props: Props) {
   if (!post?._id) {
     return (<div className="text-center py-20">
         <h1>404 - Page Not Found</h1>
-        <p>The page "{params.slug}" does not exist.</p>
+        <p>The page does not exist.</p>
       </div>
     );
   }

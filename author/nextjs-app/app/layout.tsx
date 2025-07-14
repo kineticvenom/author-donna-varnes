@@ -15,6 +15,7 @@ import { sanityFetch, SanityLive } from "@/sanity/lib/live";
 import { settingsQuery } from "@/sanity/lib/queries";
 import { resolveOpenGraphImage } from "@/sanity/lib/utils";
 import { handleError } from "./client-utils";
+import { SettingsQueryResult } from "@/types/settings";
 
 
 /**
@@ -75,17 +76,7 @@ const inter = Inter({
 });
 
 
-type SettingsQueryResult = {
-  title?: string | null;
-  description?: any; // or PortableTextBlock[] if you're using block content
-  ogImage?: {
-    asset?: { url: string | null; };
-    metadataBase?: string;
-  } | null;
-  backgroundImage?: {
-    asset?: { url: string | null; };
-  } | null;
-  };
+
 export default async function RootLayout({
   
   children,

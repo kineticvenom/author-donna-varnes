@@ -92,8 +92,8 @@ export const AllBooks = async () => {
       subHeading={`${
         data.length === 1
           ? "This book is"
-          : `These ${data.length} books are`
-      } populated from your Sanity Studio.`}
+          : `Donna Has Published ${data.length} books!`
+      } `}
     >
       {data.map((book: any) => (
         <Book key={book._id} book={book} />
