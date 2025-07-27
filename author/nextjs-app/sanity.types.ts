@@ -928,9 +928,13 @@ export type DevotionalSlugsResult = Array<{
   } | null;
 }>;
 // Variable: allBooksQuery
-// Query: *[_type == "book" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  description,  excerpt,  coverImage {   asset->{    _id,    _ref,    url  },  alt },  publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),    author->{ _id, firstName, lastName, picture {   asset->{    _id,    _ref,    url  },  alt } }  }
+// Query: *[_type == "book" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){      _id,  _type,  _createdAt,  _updatedAt,  _rev,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  description,  excerpt,  coverImage {   asset->{    _id,    _ref,    url  },  alt },  publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),    author->{ _id, firstName, lastName, picture {   asset->{    _id,    _ref,    url  },  alt } }  }
 export type AllBooksQueryResult = Array<{
   _id: string;
+  _type: "book";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
   status: "draft" | "published";
   title: string | "Untitled";
   slug: string | null;
@@ -963,10 +967,14 @@ export type AllBooksQueryResult = Array<{
   } | null;
 }>;
 // Variable: singleBookQuery
-// Query: *[_type == "book" && slug.current == $slug][0]{    content[]{      ...,      markDefs[]{ ...,   _type,  _key,  "pageSlug": page->slug.current,  "blogSlug": blog->slug.current,  "devotionalSlug": devotional->slug.current,  "bookSlug": book->slug.current,  href,  openInNewTab }    },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  description,  excerpt,  coverImage {   asset->{    _id,    _ref,    url  },  alt },  publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),    author->{ _id, firstName, lastName, picture {   asset->{    _id,    _ref,    url  },  alt } }  }
+// Query: *[_type == "book" && slug.current == $slug][0]{    content[]{      ...,      markDefs[]{ ...,   _type,  _key,  "pageSlug": page->slug.current,  "blogSlug": blog->slug.current,  "devotionalSlug": devotional->slug.current,  "bookSlug": book->slug.current,  href,  openInNewTab }    },      _id,  _type,  _createdAt,  _updatedAt,  _rev,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  description,  excerpt,  coverImage {   asset->{    _id,    _ref,    url  },  alt },  publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),    author->{ _id, firstName, lastName, picture {   asset->{    _id,    _ref,    url  },  alt } }  }
 export type SingleBookQueryResult = {
   content: null;
   _id: string;
+  _type: "book";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
   status: "draft" | "published";
   title: string | "Untitled";
   slug: string | null;
@@ -999,9 +1007,13 @@ export type SingleBookQueryResult = {
   } | null;
 } | null;
 // Variable: moreBooksQuery
-// Query: *[_type == "book" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  description,  excerpt,  coverImage {   asset->{    _id,    _ref,    url  },  alt },  publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),    author->{ _id, firstName, lastName, picture {   asset->{    _id,    _ref,    url  },  alt } }  }
+// Query: *[_type == "book" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{      _id,  _type,  _createdAt,  _updatedAt,  _rev,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  description,  excerpt,  coverImage {   asset->{    _id,    _ref,    url  },  alt },  publicationDate,  isbn,  amazonLink,  "date": coalesce(date, _updatedAt),    author->{ _id, firstName, lastName, picture {   asset->{    _id,    _ref,    url  },  alt } }  }
 export type MoreBooksQueryResult = Array<{
   _id: string;
+  _type: "book";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
   status: "draft" | "published";
   title: string | "Untitled";
   slug: string | null;
@@ -1053,9 +1065,9 @@ declare module "@sanity/client" {
     "\n  *[_type == \"devotional\" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{\n    \n  _id,\n  _type,\n  title,\n  slug { current },\n  scriptureReference,\n  coverImage { \n  asset->{\n    _id,\n    _ref,\n    url\n  },\n  alt\n },\n  publicationDate,\n  \n  author->{ _id, firstName, lastName, picture { \n  asset->{\n    _id,\n    _ref,\n    url\n  },\n  alt\n } }\n\n\n  }\n": MoreDevotionalsQueryResult;
     "\n  *[_type == \"devotional\" && slug.current == $slug][0]{\n    content[] {\n      _type,\n      _key,\n      style,\n      children[] { _type, _key, text, marks },\n      markDefs[] {\n        _type,\n        _key,\n        \"pageSlug\": page->slug.current,\n        \"blogSlug\": blog->slug.current,\n        \"devotionalSlug\": devotional->slug.current,\n        \"bookSlug\": book->slug.current,\n        href,\n        openInNewTab\n      }\n    },\n    \n  _id,\n  _type,\n  title,\n  slug { current },\n  scriptureReference,\n  coverImage { \n  asset->{\n    _id,\n    _ref,\n    url\n  },\n  alt\n },\n  publicationDate,\n  \n  author->{ _id, firstName, lastName, picture { \n  asset->{\n    _id,\n    _ref,\n    url\n  },\n  alt\n } }\n\n\n  }\n": SingleDevotionalQueryResult;
     "\n  *[_type == \"devotional\" && defined(slug.current)]{\n    slug { current }\n  }\n": DevotionalSlugsResult;
-    "\n  *[_type == \"book\" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  description,\n  excerpt,\n  coverImage { \n  asset->{\n    _id,\n    _ref,\n    url\n  },\n  alt\n },\n  publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \n  author->{ _id, firstName, lastName, picture { \n  asset->{\n    _id,\n    _ref,\n    url\n  },\n  alt\n } }\n\n\n  }\n": AllBooksQueryResult;
-    "\n  *[_type == \"book\" && slug.current == $slug][0]{\n    content[]{\n      ...,\n      markDefs[]{ ..., \n  _type,\n  _key,\n  \"pageSlug\": page->slug.current,\n  \"blogSlug\": blog->slug.current,\n  \"devotionalSlug\": devotional->slug.current,\n  \"bookSlug\": book->slug.current,\n  href,\n  openInNewTab\n }\n    },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  description,\n  excerpt,\n  coverImage { \n  asset->{\n    _id,\n    _ref,\n    url\n  },\n  alt\n },\n  publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \n  author->{ _id, firstName, lastName, picture { \n  asset->{\n    _id,\n    _ref,\n    url\n  },\n  alt\n } }\n\n\n  }\n": SingleBookQueryResult;
-    "\n  *[_type == \"book\" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  description,\n  excerpt,\n  coverImage { \n  asset->{\n    _id,\n    _ref,\n    url\n  },\n  alt\n },\n  publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \n  author->{ _id, firstName, lastName, picture { \n  asset->{\n    _id,\n    _ref,\n    url\n  },\n  alt\n } }\n\n\n  }\n": MoreBooksQueryResult;
+    "\n  *[_type == \"book\" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){\n    \n  _id,\n  _type,\n  _createdAt,\n  _updatedAt,\n  _rev,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  description,\n  excerpt,\n  coverImage { \n  asset->{\n    _id,\n    _ref,\n    url\n  },\n  alt\n },\n  publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \n  author->{ _id, firstName, lastName, picture { \n  asset->{\n    _id,\n    _ref,\n    url\n  },\n  alt\n } }\n\n\n  }\n": AllBooksQueryResult;
+    "\n  *[_type == \"book\" && slug.current == $slug][0]{\n    content[]{\n      ...,\n      markDefs[]{ ..., \n  _type,\n  _key,\n  \"pageSlug\": page->slug.current,\n  \"blogSlug\": blog->slug.current,\n  \"devotionalSlug\": devotional->slug.current,\n  \"bookSlug\": book->slug.current,\n  href,\n  openInNewTab\n }\n    },\n    \n  _id,\n  _type,\n  _createdAt,\n  _updatedAt,\n  _rev,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  description,\n  excerpt,\n  coverImage { \n  asset->{\n    _id,\n    _ref,\n    url\n  },\n  alt\n },\n  publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \n  author->{ _id, firstName, lastName, picture { \n  asset->{\n    _id,\n    _ref,\n    url\n  },\n  alt\n } }\n\n\n  }\n": SingleBookQueryResult;
+    "\n  *[_type == \"book\" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{\n    \n  _id,\n  _type,\n  _createdAt,\n  _updatedAt,\n  _rev,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  description,\n  excerpt,\n  coverImage { \n  asset->{\n    _id,\n    _ref,\n    url\n  },\n  alt\n },\n  publicationDate,\n  isbn,\n  amazonLink,\n  \"date\": coalesce(date, _updatedAt),\n  \n  author->{ _id, firstName, lastName, picture { \n  asset->{\n    _id,\n    _ref,\n    url\n  },\n  alt\n } }\n\n\n  }\n": MoreBooksQueryResult;
     "\n  *[_type == \"book\" && defined(slug.current)]{\n    \"slug\": slug.current\n  }\n": BookSlugsResult;
   }
 }
