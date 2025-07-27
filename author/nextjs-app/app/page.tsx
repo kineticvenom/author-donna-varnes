@@ -31,7 +31,7 @@ export default async function Page() {
 
   return (
     <>
-      <div className="text-center py-20">
+      {/* <div className="text-center py-20">
         <Image
           src={src || logoFallback} // Fallback to local image if Sanity image is not available
           alt={logoSource?.alt || 'Logo'}    // use CMS alt or fallback
@@ -39,7 +39,7 @@ export default async function Page() {
           height={80}
           className="object-contain h-20 sm:h-24 md:h-28 lg:h-32"
         />
-      </div>
+      </div> */}
 
       <div className="border-t border-gray-100">
         <Suspense>{await AllBooks()}</Suspense>
