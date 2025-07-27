@@ -57,9 +57,12 @@ const baseDevotionalFields = /* groq */ `
   publicationDate,
   ${authorFields}
 `;
-
 const baseBookFields = /* groq */ `
   _id,
+  _type,
+  _createdAt,
+  _updatedAt,
+  _rev,
   "status": select(_originalId in path("drafts.**") => "draft", "published"),
   "title": coalesce(title, "Untitled"),
   "slug": slug.current,
@@ -72,6 +75,7 @@ const baseBookFields = /* groq */ `
   "date": coalesce(date, _updatedAt),
   ${authorFields}
 `;
+
 
 // General Site Settings Query
 export const settingsQuery = defineQuery(`
