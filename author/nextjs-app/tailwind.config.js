@@ -111,5 +111,5 @@ module.exports= {
   future: {
     hoverOnlyWhenSupported: true,
   },
-  plugins: [typography,aspectRatio,require('@tailwindcss/line-clamp')],
+  plugins: [typography,aspectRatio],
 };
