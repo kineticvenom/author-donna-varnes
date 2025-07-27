@@ -14,6 +14,9 @@ module.exports= {
         layer: "0 35px 60px -15px rgba(0, 0, 0, 0.3)",
       },
       colors: {
+        accent: "var(--accent)",
+        "accent-foreground": "var(--accent-fg)",
+        muted: "var(--muted)",
         black: "#0d0e12",
         white: "#fff",
         cyan: {
@@ -98,10 +101,15 @@ module.exports= {
       fontFamily: {
         sans: ["var(--font-inter)"],
       },
+      fontSize: {
+        base: ["16px", "1.7"],
+        h2: ["32px", "1.2"],
+        h3: ["24px", "1.3"],
+      },
     },
   },
   future: {
     hoverOnlyWhenSupported: true,
   },
-  plugins: [typography,aspectRatio],
+  plugins: [typography,aspectRatio,require('@tailwindcss/line-clamp')],
 };
