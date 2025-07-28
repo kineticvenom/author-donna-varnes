@@ -24,7 +24,7 @@ const Book = ({ book }: { book: BookType }) => {
         <DateComponent dateString={publicationDate} />
         </div>
         {description && (
-        <p className="mt-1 text-sm text-gray-600 line-clamp-4 md:line-clamp-6">
+        <p className="mt-1 text-sm text-gray-600 line-clamp-2 md:line-clamp-3">
           {description}
         </p>)}
       </div>
