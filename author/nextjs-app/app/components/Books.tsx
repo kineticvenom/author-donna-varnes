@@ -101,29 +101,32 @@ export const AllBooks = async () => {
     </Books>
   );
 };
-// export const FeaturedBooks = async () => {
-//   const { data } = await sanityFetch({ query: allBooksQuery });
+export const FeaturedBooks = async () => {
+  let { data } = await sanityFetch({ query: allBooksQuery });
 
-//   if (!data || data.length === 0) {
-//     return <p>No books available.</p>;
-//   }
+  if (!data || data.length === 0) {
+    return <p>No books available.</p>;
+  }
 
-//   const books = data as BookType[];
-//   const randomIndex = Math.floor(Math.random() * books.length);
-//   const randomBook = books[randomIndex];
+  
+  const randomIndex = Math.floor(Math.random() * data.length);
+  data = [data[randomIndex]]; // Select a single random book
 
-//   if (!randomBook) {
-//     return <p>Could not select a featured book.</p>;
-//   }
+  return (
+    <Books
+      heading="Featured Book!"
+      subHeading={`${
+        data.length === 1
+          ? "This book is"
+          : `Donna Has Published ${data.length} books!`
+      } `}
+    >
+      {data.map((book: any) => (
+        <Book key={book._id} book={book} />
+      ))}
+    </Books>
+  );
 
-//   return (
-//     <Books
-//       heading="Featured Book!"
-//       subHeading="Enjoy a randomly selected highlight from Donna's collection."
-//     >
-//       <Book key={randomBook._id} book={randomBook} />
-//     </Books>
-//   );
-// };
+};
 
 
