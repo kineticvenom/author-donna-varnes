@@ -11,20 +11,20 @@ const Book = ({ book }: { book: BookType }) => {
   const { _id, title, slug,  description, publicationDate,coverImage } = book;
 
   return (
-    <article key={_id} className="flex flex-row items-start justify-between">
+    <article key={_id}  className="grid grid-cols-[96px_1fr] gap-4 md:grid-cols-[160px_1fr] md:gap-6">
       <CoverImage image={coverImage ?? null} />
 
-      <div className="flex flex-col w-2/3 ml-5">
-        <h3 className="mt-3 text-2xl font-semibold">
-          <Link href={`/books/${slug}`} className="hover:text-red-500 underline transition-colors">
+      <div className="flex flex-col gap-2">
+        <h3 className="text-2xl font-semibold leading-tight">
+          <Link href={`/books/${slug}`} className="text-accent hover:underline transition-colors">
             {title}
           </Link>
         </h3>
-        <div className="text-gray-500 text-sm">
+        <div className="text-sm text-muted-foreground">
         <DateComponent dateString={publicationDate} />
         </div>
         {description && (
-        <p className="mt-5 line-clamp-8 text-sm leading-6 text-gray-600">
+        <p className="mt-1 text-sm text-gray-600 line-clamp-4 md:line-clamp-6">
           {description}
         </p>)}
       </div>
@@ -115,11 +115,7 @@ export const FeaturedBooks = async () => {
   return (
     <Books
       heading="Featured Book!"
-      subHeading={`${
-        data.length === 1
-          ? "This book is"
-          : `Donna Has Published ${data.length} books!`
-      } `}
+      subHeading={`"Check out this featured book!" `}
     >
       {data.map((book: any) => (
         <Book key={book._id} book={book} />
