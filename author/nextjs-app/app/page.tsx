@@ -2,7 +2,7 @@
 import { Suspense } from "react";
 import { sanityFetch } from "@/sanity/lib/live";
 import { settingsQuery } from "@/sanity/lib/queries"; 
-import { AllBooks, FeaturedBooks } from "./components/Books";
+import { AllBooks, FeaturedBook } from "./components/Books";
 import { AllDevotionals, AllPosts } from "@/app/components/Posts";
 
 export default async function Page() {
@@ -16,7 +16,7 @@ export default async function Page() {
     <>
 
       <div className="border-t border-gray-100">
-        <Suspense>{await FeaturedBooks()}</Suspense>
+        <Suspense>{await FeaturedBook()}</Suspense>
       </div>
       <div className="border-t border-gray-100">
         <Suspense>{await AllDevotionals()}</Suspense>

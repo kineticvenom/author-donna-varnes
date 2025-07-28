@@ -4,7 +4,14 @@ import { urlForImage } from "@/sanity/lib/utils";
 
 interface CoverImageProps {
   image: any;
+  alt?: string;
+  className?: string;
+  imgClassName?: string;
+  width?: number;
+  height?: number;
+  sizes?: string;
   priority?: boolean;
+  fallbackText?: string;
 }
 
 export default function CoverImage({ image: source, priority }: CoverImageProps) {

@@ -1,16 +1,13 @@
-import { defineQuery } from 'next-sanity';
-
-import groq from 'groq';
+import { defineQuery } from "next-sanity";
+import groq from "groq";
 
 export const imageFields = /* groq */ `
   asset->{
     _id,
-    _ref,
     url
   },
   alt
 `;
-
 
 const authorFields = /* groq */ `
   author->{ _id, firstName, lastName, picture { ${imageFields} } }
@@ -27,8 +24,6 @@ const linkReference = /* groq */ `
   openInNewTab
 `;
 
-
-
 const linkFields = /* groq */ `
   link {
     ...,
@@ -36,11 +31,13 @@ const linkFields = /* groq */ `
   }
 `;
 
+/* ---------------- Base field fragments ---------------- */
+
 const baseBlogFields = /* groq */ `
   _id,
   "status": select(_originalId in path("drafts.**") => "draft", "published"),
   "title": coalesce(title, "Untitled"),
-  "slug": slug.current,
+  slug { current },
   excerpt,
   coverImage { ${imageFields} },
   publicationDate,
@@ -57,6 +54,7 @@ const baseDevotionalFields = /* groq */ `
   publicationDate,
   ${authorFields}
 `;
+
 const baseBookFields = /* groq */ `
   _id,
   _type,
@@ -65,7 +63,7 @@ const baseBookFields = /* groq */ `
   _rev,
   "status": select(_originalId in path("drafts.**") => "draft", "published"),
   "title": coalesce(title, "Untitled"),
-  "slug": slug.current,
+  slug { current },
   description,
   excerpt,
   coverImage { ${imageFields} },
@@ -76,9 +74,9 @@ const baseBookFields = /* groq */ `
   ${authorFields}
 `;
 
+/* ---------------- Settings ---------------- */
 
-// General Site Settings Query
-export const settingsQuery = defineQuery(`
+export const settingsQuery = defineQuery(/* groq */ `
   *[_id == "siteSettings"][0]{
     title,
     description,
@@ -88,16 +86,17 @@ export const settingsQuery = defineQuery(`
   }
 `);
 
-// Page Queries
-export const getPageQuery = `
+/* ---------------- Pages ---------------- */
+
+export const getPageQuery = /* groq */ `
   *[_type == 'page' && slug.current == $slug][0]{
     _id,
     _type,
     name,
-    slug,
+    slug { current },
     heading,
     subheading,
-    "pageBuilder": pageBuilder[]{
+    "pageBuilder": pageBuilder[] {
       ...,
       _type == "callToAction" => {
         link {
@@ -136,26 +135,27 @@ export const getPageQuery = `
   }
 `;
 
+/* ---------------- Sitemap ---------------- */
 
-// Sitemap Query
-export const sitemapData = defineQuery(`
+export const sitemapData = defineQuery(/* groq */ `
   *[(_type in ["page", "blog", "devotional", "book"]) && defined(slug.current)] | order(_type asc){
-    "slug": slug.current,
+    slug { current },
     _type,
     _updatedAt
   }
 `);
 
-// Blog Queries
-export const allBlogsQuery = defineQuery(`
+/* ---------------- Blogs ---------------- */
+
+export const allBlogsQuery = defineQuery(/* groq */ `
   *[_type == "blog" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){
     ${baseBlogFields}
   }
 `);
 
-export const singleBlogQuery = defineQuery(`
+export const singleBlogQuery = defineQuery(/* groq */ `
   *[_type == "blog" && slug.current == $slug][0]{
-    content[]{
+    content[] {
       ...,
       markDefs[]{ ..., ${linkReference} }
     },
@@ -163,32 +163,35 @@ export const singleBlogQuery = defineQuery(`
   }
 `);
 
-export const moreBlogsQuery = defineQuery(`
-  *[_type == "blog" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{
+export const moreBlogsQuery = defineQuery(/* groq */ `
+  *[_type == "blog" && _id != $skip && defined(slug.current)] 
+  | order(publicationDate desc, _updatedAt desc)[0...$limit]{
     ${baseBlogFields}
   }
 `);
 
-export const blogSlugs = defineQuery(`
+export const blogSlugs = defineQuery(/* groq */ `
   *[_type == "blog" && defined(slug.current)]{
-    "slug": slug.current
+    slug { current }
   }
 `);
 
-// Devotional Queries
-export const allDevotionalsQuery = defineQuery(`
+/* ---------------- Devotionals ---------------- */
+
+export const allDevotionalsQuery = defineQuery(/* groq */ `
   *[_type == "devotional" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){
     ${baseDevotionalFields}
   }
 `);
 
-export const moreDevotionalsQuery = defineQuery(`
-  *[_type == "devotional" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{
+export const moreDevotionalsQuery = defineQuery(/* groq */ `
+  *[_type == "devotional" && _id != $skip && defined(slug.current)] 
+  | order(publicationDate desc, _updatedAt desc)[0...$limit]{
     ${baseDevotionalFields}
   }
 `);
 
-export const singleDevotionalQuery = defineQuery(`
+export const singleDevotionalQuery = defineQuery(/* groq */ `
   *[_type == "devotional" && slug.current == $slug][0]{
     content[] {
       _type,
@@ -210,23 +213,23 @@ export const singleDevotionalQuery = defineQuery(`
   }
 `);
 
-
-export const devotionalSlugs = defineQuery(`
+export const devotionalSlugs = defineQuery(/* groq */ `
   *[_type == "devotional" && defined(slug.current)]{
     slug { current }
   }
 `);
 
-// Book Queries
-export const allBooksQuery = defineQuery(`
+/* ---------------- Books ---------------- */
+
+export const allBooksQuery = defineQuery(/* groq */ `
   *[_type == "book" && defined(slug.current)] | order(publicationDate desc, _updatedAt desc){
     ${baseBookFields}
   }
 `);
 
-export const singleBookQuery = defineQuery(`
+export const singleBookQuery = defineQuery(/* groq */ `
   *[_type == "book" && slug.current == $slug][0]{
-    content[]{
+    content[] {
       ...,
       markDefs[]{ ..., ${linkReference} }
     },
@@ -234,14 +237,15 @@ export const singleBookQuery = defineQuery(`
   }
 `);
 
-export const moreBooksQuery = defineQuery(`
-  *[_type == "book" && _id != $skip && defined(slug.current)] | order(publicationDate desc, _updatedAt desc)[0...$limit]{
+export const moreBooksQuery = defineQuery(/* groq */ `
+  *[_type == "book" && _id != $skip && defined(slug.current)] 
+  | order(publicationDate desc, _updatedAt desc)[0...$limit]{
     ${baseBookFields}
   }
 `);
 
-export const bookSlugs = defineQuery(`
+export const bookSlugs = defineQuery(/* groq */ `
   *[_type == "book" && defined(slug.current)]{
-    "slug": slug.current
+    slug { current }
   }
 `);
