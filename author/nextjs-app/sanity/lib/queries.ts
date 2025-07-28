@@ -38,6 +38,7 @@ const linkFields = /* groq */ `
 
 const baseBlogFields = /* groq */ `
   _id,
+  _type,
   "status": select(_originalId in path("drafts.**") => "draft", "published"),
   "title": coalesce(title, "Untitled"),
   "slug": slug.current,
