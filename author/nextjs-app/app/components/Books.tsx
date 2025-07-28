@@ -16,9 +16,12 @@ const Book = ({ book }: { book: BookType }) => {
       className="group grid grid-cols-[96px_1fr] gap-4 md:grid-cols-[160px_1fr] md:gap-6"
     >
       {/* image wrapper for rounded corners / aspect / bg */}
-      <div className="relative aspect-[3/4] rounded-md bg-slate-100">
-        <CoverImage image={coverImage ?? null} imgClassName="object-contain w-full h-full"/>
-      </div>
+     <div className="relative aspect-[3/4] rounded-md bg-slate-100 flex items-center justify-center">
+      <CoverImage
+        image={coverImage ?? null}
+        imgClassName="h-full w-full object-contain"
+      />
+     </div>
 
       <div className="flex flex-col gap-2">
         <h3 className="text-2xl font-semibold leading-tight">
