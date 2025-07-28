@@ -126,7 +126,7 @@ export const AllPosts = async () => {
   return (
     <Posts
       heading="Recent Posts"
-      subHeading={`"Explore Recent Devotionals and Blogs!" `}
+      subHeading={`"Explore Recent Blogs!" `}
     >
       {data.map((post) => (
         <Post key={post._id} post={post} />
@@ -148,7 +148,7 @@ export const AllDevotionals = async () => {
   return (
     <Posts
       heading="Recent Devotionals"
-      subHeading={`${data.length === 1 ? "This devotional is" : `These ${data.length} devotionals are`} populated from your Sanity Studio.`}
+      subHeading={`"Explore Recent Devotionals!" `}
     >
       {data.map((post) => (
         <Post key={post._id} post={post} />

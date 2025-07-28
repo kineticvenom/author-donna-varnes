@@ -7,7 +7,7 @@ import { settingsQuery } from "@/sanity/lib/queries";
 import { urlForImage } from "@/sanity/lib/utils";
 import type { SettingsQueryResult } from "@/types/settings";
 import { AllBooks } from "./components/Books";
-import { AllPosts } from "@/app/components/Posts";
+import { AllDevotionals, AllPosts } from "@/app/components/Posts";
 
 export default async function Page() {
   const result = await sanityFetch({
@@ -43,6 +43,9 @@ export default async function Page() {
 
       <div className="border-t border-gray-100">
         <Suspense>{await AllBooks()}</Suspense>
+      </div>
+      <div className="border-t border-gray-100">
+        <Suspense>{await AllDevotionals()}</Suspense>
       </div>
       <div className="border-t border-gray-100">
         <Suspense>{await AllPosts()}</Suspense>
