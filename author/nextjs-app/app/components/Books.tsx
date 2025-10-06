@@ -23,7 +23,7 @@ const Book = ({ book }: { book: BookType }) => {
       />
      </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 article-text">
         <h3 className="text-2xl font-semibold leading-tight">
           <Link
             href={`/books/${typeof slug === "string" ? slug : slug?.current ?? ""}`}

@@ -79,8 +79,8 @@ export default async function PostPage(props: Props) {
   return (
     <>
       <div>
-        <div className="container my-12 lg:my-24 grid gap-12">
-          <div>
+        <div className="container my-12 lg:my-24 grid gap-12 text-shadow">
+          <div className="flex flex-col flex-wrap content-around">
             <div className="pb-6 grid gap-6 mb-6 border-b border-gray-100">
               <div className="max-w-3xl flex flex-col gap-6">
                 <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-7xl">
@@ -101,14 +101,14 @@ export default async function PostPage(props: Props) {
 
                 {post.author?.firstName && post.author?.lastName && (
                   <div className="mt-4 flex items-center gap-3">
-                    {post.author.picture?.asset?.url && (
-                      <CoverImage
-                        image={post.author.picture.asset.url}
-                      />
+                    {/* {post.author.picture?.asset?.url && (
+                      // <CoverImage
+                      //   image={post.author.picture.asset.url}
+                      // />
                     )}
-                    <span className="text-sm text-gray-600">
-                      By {post.author.firstName} {post.author.lastName}
-                    </span>
+                    <span className="text-sm text-gray-600"> */}
+                      {/* By {post.author.firstName} {post.author.lastName}
+                    </span> */}
                   </div>
                 )}
               </div>
@@ -128,11 +128,11 @@ export default async function PostPage(props: Props) {
                 />
               )}
 
-              {post.excerpt && (
+              {/* {post.excerpt && (
                 <blockquote className="mt-6 italic border-l-4 border-gray-300 pl-4 text-gray-700">
-                  {post.excerpt}
-                </blockquote>
-              )}
+                  {post.excerpt} */}
+                {/* </blockquote> */}
+              {/* )} */}
             </article>
           </div>
         </div>

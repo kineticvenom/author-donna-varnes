@@ -37,7 +37,7 @@ const Post = ({ post }: { post: PostType }) => {
   return (
     <article
       key={_id}
-      className="group flex max-w-xl flex-col items-start justify-between"
+      className="group flex max-w-xl flex-col items-start justify-between article-row "
     >
       <div className="text-sm text-muted-foreground">
         {publicationDate && <DateComponent dateString={publicationDate} />}

@@ -21,7 +21,7 @@ export default async function Header() {
   const src = logoUrl; // Use string path for fallback
 
   return (
-    <header className="fixed z-50 h-24 inset-0 bg-white/80 flex items-center backdrop-blur-lg">
+    <header className="fixed z-50 h-24 inset-0 flex items-center backdrop-blur-lg rgba(255, 228, 196)">
       <div className="container py-6 sm:px-6">
         <div className="flex items-center justify-between gap-5">
           <Link href="/" className="flex items-center gap-2">
@@ -36,7 +36,7 @@ export default async function Header() {
           <nav>
             <ul
               role="list"
-              className="flex items-center gap-4 md:gap-6 leading-5 text-sm md:text-base tracking-tight font-normal"
+              className="flex items-center gap-4 md:gap-6 leading-5 text-sm md:text-base tracking-tight font-bold"
             >
               <li><Link href="/">Home</Link></li>
               <li><Link href="/blog">Blog</Link></li>

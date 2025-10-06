@@ -52,7 +52,7 @@ export default async function BookPage({
     );
 
   return (
-    <div className="container mx-auto py-12">
+    <div className="container mx-auto py-12 text-shadow">
       <article className="prose lg:prose-xl">
         <h1 className="text-4xl font-bold text-gray-900">{book.title}</h1>
 

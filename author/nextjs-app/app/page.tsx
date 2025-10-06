@@ -15,13 +15,13 @@ export default async function Page() {
   return (
     <>
 
-      <div className="border-t border-gray-100">
+      <div className="border-t border-gray-100 text-shadow">
         <Suspense>{await FeaturedBooks()}</Suspense>
       </div>
-      <div className="border-t border-gray-100">
+      <div className="border-t border-gray-100 text-shadow">
         <Suspense>{await AllDevotionals()}</Suspense>
       </div>
-      <div className="border-t border-gray-100">
+      <div className="border-t border-gray-100 text-shadow">
         <Suspense>{await AllPosts()}</Suspense>
       </div>
     </>

@@ -11,7 +11,7 @@ export default async function DevotionalsPage() {
   });
 
   return (
-    <div className="container my-12 lg:my-24">
+    <div className="container my-12 lg:my-24 text-shadow">
       <h1 className="text-5xl font-bold mb-6">Devotionals</h1>
       <div className="grid gap-12">
         {posts.map((post: any) => (
