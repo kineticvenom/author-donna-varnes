@@ -69,32 +69,28 @@ export default async function PostPage(props: Props) {
   });
 
   if (!post?._id) {
-    return (<div className="text-center py-20">
-        <h1>404 - Page Not Found</h1>
-        <p>The page does not exist.</p>
-      </div>
-    );
+    notFound();
   }
   const hasContent = Array.isArray(post.content) && post.content.length > 0;
   return (
     <>
       <div>
-        <div className="container my-12 lg:my-24 grid gap-12 text-shadow">
+        <div className="container py-12 lg:py-24 grid gap-12 bg-white">
           <div className="flex flex-col flex-wrap content-around">
-            <div className="pb-6 grid gap-6 mb-6 border-b border-gray-100">
+            <div className="pb-6 grid gap-6 mb-6 border-b border-cream-300">
               <div className="max-w-3xl flex flex-col gap-6">
-                <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-7xl">
+                <h1 className="text-4xl font-bold tracking-tight text-brown-800 sm:text-5xl lg:text-7xl">
                   {post.title}
                 </h1>
 
                 {post.status && (
-                  <p className="text-xs uppercase text-gray-400">
+                  <p className="text-xs uppercase text-brown-400">
                     Status: {post.status}
                   </p>
                 )}
 
                 {post.publicationDate && (
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-brown-500">
                     Published: <DateComponent dateString={post.publicationDate} />
                   </p>
                 )}
@@ -106,7 +102,7 @@ export default async function PostPage(props: Props) {
                       //   image={post.author.picture.asset.url}
                       // />
                     )}
-                    <span className="text-sm text-gray-600"> */}
+                    <span className="text-sm text-brown-600"> */}
                       {/* By {post.author.firstName} {post.author.lastName}
                     </span> */}
                   </div>
@@ -138,8 +134,8 @@ export default async function PostPage(props: Props) {
         </div>
       </div>
 
-      <div className="border-t border-gray-100">
-        <div className="container my-12 lg:my-24 grid gap-12">
+      <div className="bg-cream-100">
+        <div className="container py-12 lg:py-24 grid gap-12">
           <aside>
             <Suspense>{await MoreBlogs({ skip: post._id, limit: 2 })}</Suspense>
           </aside>

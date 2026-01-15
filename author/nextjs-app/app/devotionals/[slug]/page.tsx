@@ -1,7 +1,7 @@
 
 
 import type { Metadata, ResolvingMetadata } from "next";
-
+import { notFound } from "next/navigation";
 import { type PortableTextBlock } from "next-sanity";
 import { Suspense } from "react";
 import DateComponent from "@/app/components/Date";
@@ -26,7 +26,6 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
     perspective: "published",
     stega: false,
   });
-  console.log("Devotional slugs:", data); // Debug
   return data
     .filter((item): item is { slug: { current: string } } => !!item.slug?.current)
     .map((item) => ({
@@ -80,11 +79,7 @@ export default async function DevotionalPage(props: Props) {
   });
 
   if (!post?._id) {
-    return (<div className="text-center py-20">
-        <h1>404 - Page Not Found</h1>
-        <p>The page does not exist.</p>
-      </div>
-    );
+    notFound();
   }
 
   const hasContent = Array.isArray(post.content) && post.content.length > 0;
@@ -92,29 +87,26 @@ export default async function DevotionalPage(props: Props) {
   return (
     <>
       <div>
-        <div className="container my-12 lg:my-24 grid gap-12">
-          <div>
-            <div className="pb-6 grid gap-6 mb-6 border-b border-gray-100">
+        <div className="container py-12 lg:py-24 grid gap-12 bg-white">
+          <div className="flex flex-col flex-wrap content-around">
+            <div className="pb-6 grid gap-6 mb-6 border-b border-cream-300">
               <div className="max-w-3xl flex flex-col gap-6">
-                <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-7xl">
+                <h1 className="text-4xl font-bold tracking-tight text-brown-800 sm:text-5xl lg:text-7xl">
                   {post.title}
                 </h1>
 
                 {post.publicationDate && (
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-brown-500">
                     Published: <DateComponent dateString={post.publicationDate} />
                   </p>
                 )}
 
                 {post.author?.firstName && post.author?.lastName && (
                   <div className="mt-4 flex items-center gap-3">
-                    {post.author.picture?.asset?.url && (
-                      <CoverImage
-                        image={post.author.picture.asset.url}
-                       
-                      />
+                    {post.author.picture && (
+                      <CoverImage image={post.author.picture} />
                     )}
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-brown-600">
                       By {post.author.firstName} {post.author.lastName}
                     </span>
                   </div>
@@ -140,10 +132,10 @@ export default async function DevotionalPage(props: Props) {
         </div>
       </div>
 
-      <div className="border-t border-gray-100">
-        <div className="container my-12 lg:my-24 grid gap-12">
+      <div className="bg-cream-100">
+        <div className="container py-12 lg:py-24 grid gap-12">
           <aside>
-            <Suspense>{MoreDevotionals({ skip: post._id, limit: 2 })}</Suspense>
+            <Suspense>{await MoreDevotionals({ skip: post._id, limit: 2 })}</Suspense>
           </aside>
         </div>
       </div>

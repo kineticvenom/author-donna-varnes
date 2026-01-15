@@ -15,12 +15,14 @@ import {
 import DateComponent from "@/app/components/Date";
 
 /* ----------------------- helpers ----------------------- */
-type PostType = MoreBlogsQueryResult[0] | MoreDevotionalsQueryResult[0];
+type PostType = MoreBlogsQueryResult[number] | MoreDevotionalsQueryResult[number];
 
-const isBlogPost = (post: PostType): post is MoreBlogsQueryResult[0] =>
-  (post as any)._type === "blog";
+const isBlogPost = (post: PostType): post is MoreBlogsQueryResult[number] =>
+  post._type === "blog";
 
-const toSlug = (slug: any) =>
+// Handle both string slugs (from blogs) and object slugs (from devotionals)
+type SlugType = string | { current: string | null } | null;
+const toSlug = (slug: SlugType): string =>
   typeof slug === "string" ? slug : slug?.current ?? "";
 
 /* -------------------- presentational -------------------- */
@@ -53,7 +55,7 @@ const Post = ({ post }: { post: PostType }) => {
       </h3>
 
       {description && (
-        <p className="mt-5 text-sm leading-6 text-gray-600 line-clamp-3 group-hover:text-gray-700 transition-colors">
+        <p className="mt-5 text-sm leading-6 text-brown-600 line-clamp-3 group-hover:text-brown-700 transition-colors">
           {description}
         </p>
       )}
@@ -70,14 +72,14 @@ const Posts = ({
   heading?: string;
   subHeading?: string;
 }) => (
-  <section className="max-w-5xl mx-auto px-4 py-16 border-t first:border-0">
+  <section className="max-w-5xl mx-auto px-4 py-12">
     {heading && (
       <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl mb-6">
         {heading}
       </h2>
     )}
     {subHeading && (
-      <p className="text-lg leading-8 text-gray-600 mb-8">{subHeading}</p>
+      <p className="text-lg leading-8 text-brown-600 mb-8">{subHeading}</p>
     )}
 
     <div className="space-y-12">{children}</div>

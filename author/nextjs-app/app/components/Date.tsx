@@ -3,7 +3,7 @@ import { format, isValid, parseISO } from 'date-fns';
 export default function DateComponent({
   dateString,
 }: {
-  dateString?: string;
+  dateString?: string | null;
 }) {
   if (!dateString) {
     return null;

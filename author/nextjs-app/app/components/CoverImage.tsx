@@ -2,8 +2,18 @@ import { stegaClean } from "@sanity/client/stega";
 import Image from "next/image";
 import { urlForImage } from "@/sanity/lib/utils";
 
+// Matches the coverImage shape from GROQ query results
+export interface SanityImage {
+  asset?: {
+    _id?: string;
+    _ref?: string | null;
+    url?: string | null;
+  } | null;
+  alt?: string | null;
+}
+
 interface CoverImageProps {
-  image: any;
+  image: SanityImage | null;
   alt?: string;
   className?: string;
   imgClassName?: string;
@@ -15,10 +25,9 @@ interface CoverImageProps {
 }
 
 export default function CoverImage({ image: source, priority }: CoverImageProps) {
-  
   // Extract the two possible sources of truth
-  const ref = source?.asset?._ref as string | undefined;
-  const originalUrl = source?.asset?.url as string | undefined;
+  const ref = source?.asset?._ref;
+  const originalUrl = source?.asset?.url;
 
  // Build or fallback
  let imageUrl: string | null = null;
@@ -34,12 +43,11 @@ export default function CoverImage({ image: source, priority }: CoverImageProps)
 
   // Whether we have _any_ valid URL
   const hasValidImage = Boolean(imageUrl);
-  console.log('CoverImage Debug:', { source, hasValidImage, imageUrl });
 
   if (!imageUrl || !hasValidImage) {
     return (
       <div
-        className="bg-slate-100 text-center text-gray-400 text-sm italic flex items-center justify-center w-[300px] h-[450px] mx-auto"
+        className="bg-cream-100 text-center text-brown-400 text-sm italic flex items-center justify-center w-[300px] h-[450px] mx-auto"
         style={{ border: "1px solid #e5e7eb", borderRadius: "0.5rem" }}
       >
         No Image Available

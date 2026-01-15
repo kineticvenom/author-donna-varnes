@@ -2,16 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  /* Elegant serif headings */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif), Georgia, serif;
+    color: #554840;
+    font-weight: 600;
+  }
+
+  /* Warm link styling */
+  a {
+    color: #8a6340;
+    transition: color 0.2s ease;
+  }
+
+  a:hover {
+    color: #3d3c3c;
+  }
+
+  /* Body text */
+  body {
+    font-family: var(--font-inter), system-ui, sans-serif;
+    color: #554840;
+    line-height: 1.7;
+  }
+}
+
 @layer utilities {
   .text-shadow {
-    text-shadow: 0 1px 2px rgba(0,0,0,.6);
-    /* background-color: rgba(255, 228, 196, 0.584); */
-    background-image: radial-gradient(ellipse at center, rgba(255, 228, 196, 0.85), transparent);
-    
+    text-shadow: 0 1px 2px rgba(0,0,0,.3);
+    background-image: radial-gradient(ellipse at center, rgba(253, 248, 240, 0.92), transparent);
   }
 }
 
 @layer components {
+  /* Navigation link styling */
+  .nav-link {
+    @apply uppercase tracking-wider text-sm font-medium text-brown-600 hover:text-gold-600 transition-colors;
+  }
+
   .article-row {
     display: flex;
     flex-direction: row;
@@ -20,9 +49,25 @@
     flex-wrap: nowrap;
     gap: 1rem;
   }
+
   .article-text {
     flex-direction: column;
     display: flex;
     max-width: 42rem;
+  }
+
+  /* Card styling for books/posts */
+  .content-card {
+    @apply bg-cream-50 border border-cream-300 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow;
+  }
+
+  /* Gold accent button */
+  .btn-gold {
+    @apply bg-gold-500 text-white px-6 py-3 rounded font-medium hover:bg-gold-600 transition-colors;
+  }
+
+  /* Section divider */
+  .section-divider {
+    @apply border-t border-cream-300 my-12;
   }
 }

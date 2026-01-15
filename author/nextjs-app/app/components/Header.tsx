@@ -21,29 +21,29 @@ export default async function Header() {
   const src = logoUrl; // Use string path for fallback
 
   return (
-    <header className="fixed z-50 h-24 inset-0 flex items-center backdrop-blur-lg rgba(255, 228, 196)">
-      <div className="container py-6 sm:px-6">
+    <header className="fixed z-50 h-20 inset-0 flex items-center bg-white border-b-4 border-gold-500">
+      <div className="container py-4 sm:px-6">
         <div className="flex items-center justify-between gap-5">
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src={logoFallback} // Fallback to local image if Sanity image is not available
+              src={logoFallback}
               alt="Logo"
               className="h-10 sm:h-12 object-contain"
-              width={300} // Match width in urlForImage
-              height={80} // Match height in urlForImage
+              width={300}
+              height={80}
             />
           </Link>
           <nav>
             <ul
               role="list"
-              className="flex items-center gap-4 md:gap-6 leading-5 text-sm md:text-base tracking-tight font-bold"
+              className="flex items-center gap-6 md:gap-8"
             >
-              <li><Link href="/">Home</Link></li>
-              <li><Link href="/blog">Blog</Link></li>
-              <li><Link href="/books">Books</Link></li>
-              <li><Link href="/devotionals">Devotions</Link></li>
-              <li><Link href="/contact">Contact</Link></li>
-              <li><Link href="/about">About</Link></li>
+              <li><Link href="/" className="nav-link">Home</Link></li>
+              <li><Link href="/books" className="nav-link">Books</Link></li>
+              <li><Link href="/blog" className="nav-link">Blog</Link></li>
+              <li><Link href="/devotionals" className="nav-link">Devotions</Link></li>
+              <li><Link href="/about" className="nav-link">About</Link></li>
+              <li><Link href="/contact" className="nav-link">Contact</Link></li>
             </ul>
           </nav>
         </div>

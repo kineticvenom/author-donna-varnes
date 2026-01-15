@@ -45,23 +45,21 @@ export default async function BookPage({
     params: { slug },
   });
 
-  if (!book) return (<div className="text-center py-20">
-        <h1>404 - Page Not Found</h1>
-        <p>The page does not exist.</p>
-      </div>
-    );
+  if (!book) {
+    notFound();
+  }
 
   return (
-    <div className="container mx-auto py-12 text-shadow">
+    <div className="container mx-auto py-12 lg:py-24 bg-white">
       <article className="prose lg:prose-xl">
-        <h1 className="text-4xl font-bold text-gray-900">{book.title}</h1>
+        <h1 className="text-4xl font-bold text-brown-800">{book.title}</h1>
 
         {book.status && (
-          <p className="text-xs uppercase text-gray-400">Status: {book.status}</p>
+          <p className="text-xs uppercase text-brown-400">Status: {book.status}</p>
         )}
 
         {book.publicationDate && (
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-brown-500">
             Published: <DateComponent dateString={book.publicationDate} />
           </p>
         )}
@@ -81,7 +79,7 @@ export default async function BookPage({
               
               />
             )}
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-brown-600">
               By {book.author.firstName} {book.author.lastName}
             </span>
           </div>
@@ -94,7 +92,7 @@ export default async function BookPage({
         )}
 
         {book.excerpt && (
-          <blockquote className="mt-6 italic border-l-4 border-gray-300 pl-4 text-gray-700">
+          <blockquote className="mt-6 italic border-l-4 border-cream-400 pl-4 text-brown-700">
             {book.excerpt}
           </blockquote>
         )}
@@ -108,7 +106,7 @@ export default async function BookPage({
                 href={book.amazonLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 underline"
+                className="text-gold-600 underline"
               >
                 View on Amazon
               </a>
