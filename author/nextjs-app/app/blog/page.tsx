@@ -13,7 +13,8 @@ export default async function BlogPage() {
 
   return (
     <div className="container py-12 lg:py-24 bg-white">
-      <h1 className="text-5xl font-bold mb-6">Blog</h1>
+      <h1 className="text-5xl font-bold mb-2">From the Blog</h1>
+      <p className="text-lg text-brown-600 mb-8">Thoughts, reflections, and updates</p>
       <div className="grid gap-8">
         {posts.map((post) => (
           <Link

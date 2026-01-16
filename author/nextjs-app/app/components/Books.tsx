@@ -91,7 +91,7 @@ export const MoreBooks = async ({
   if (!data || data.length === 0) return null;
 
   return (
-    <Books heading={`Recent Books (${data.length})`}>
+    <Books heading="More From the Shelf" subHeading="Continue exploring">
       {data.map((book) => (
         <Book key={book._id} book={book} />
       ))}
@@ -106,12 +106,8 @@ export const AllBooks = async () => {
 
   return (
     <Books
-      heading="My Published Books!"
-      subHeading={
-        data.length === 1
-          ? "This book is"
-          : `Donna Has Published ${data.length} books!`
-      }
+      heading="From My Bookshelf"
+      subHeading="Stories crafted with faith, hope, and heart"
     >
       {data.map((book) => (
         <Book key={book._id} book={book} />
@@ -129,7 +125,7 @@ export const FeaturedBooks = async () => {
   data = [data[randomIndex]];
 
   return (
-    <Books heading="Featured Book!" subHeading={`"Check out this featured book!" `}>
+    <Books heading="Worth Your Time" subHeading="A story waiting to be discovered">
       {data.map((book) => (
         <Book key={book._id} book={book} />
       ))}

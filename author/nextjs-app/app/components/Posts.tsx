@@ -115,7 +115,7 @@ export const MoreBlogs = async ({
   if (!data?.length) return null;
 
   return (
-    <Posts heading={`Recent Posts (${data.length})`}>
+    <Posts heading="More to Read" subHeading="Keep exploring">
       {data.map((blog) => (
         <Post key={blog._id} post={blog} />
       ))}
@@ -139,7 +139,7 @@ export const MoreDevotionals = async ({
   if (!data?.length) return null;
 
   return (
-    <Posts heading={`Recent Devotionals (${data.length})`}>
+    <Posts heading="More Devotionals" subHeading="Continue your journey">
       {data.map((devotional) => (
         <Post key={devotional._id} post={devotional} />
       ))}
@@ -156,7 +156,7 @@ export const AllPosts = async () => {
   if (!data?.length) return <p className="px-4">No posts available.</p>;
 
   return (
-    <Posts heading="Recent Posts" subHeading={`"Explore Recent Blogs!" `}>
+    <Posts heading="From the Blog" subHeading="Thoughts, reflections, and updates">
       {data.map((post) => (
         <Post key={post._id} post={post} />
       ))}
@@ -174,8 +174,8 @@ export const AllDevotionals = async () => {
 
   return (
     <Posts
-      heading="Recent Devotionals"
-      subHeading={`"Explore Recent Devotionals!" `}
+      heading="Daily Inspiration"
+      subHeading="Moments of faith and reflection"
     >
       {data.map((post) => (
         <Post key={post._id} post={post} />
