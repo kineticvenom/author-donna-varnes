@@ -4,6 +4,15 @@ const aspectRatio = require('@tailwindcss/aspect-ratio');
 
 module.exports= {
   content: ["./app/**/*.{ts,tsx}", "./sanity/**/*.{ts,tsx}","./components/**/*.{ts,tsx}"],
+  safelist: [
+    // Sage green classes for devotionals
+    "text-sage-600",
+    "hover:border-sage-300",
+    "hover:bg-sage-50",
+    "border-sage-500",
+    "bg-sage-500",
+    "hover:bg-sage-600",
+  ],
   theme: {
     container: {
       center: true,

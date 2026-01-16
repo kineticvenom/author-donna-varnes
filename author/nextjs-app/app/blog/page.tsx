@@ -14,18 +14,39 @@ export default async function BlogPage() {
   return (
     <div className="container py-12 lg:py-24 bg-white">
       <h1 className="text-5xl font-bold mb-6">Blog</h1>
-      <div className="grid gap-12">
+      <div className="grid gap-8">
         {posts.map((post) => (
-          <article key={post._id} className="max-w-2xl">
-            <CoverImage image={post.coverImage ?? null} />
-            <h2 className="text-3xl font-semibold mt-4">
-              <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-            </h2>
-            <DateComponent dateString={post.publicationDate} />
-            {post.excerpt && (
-              <p className="mt-2 text-brown-600">{post.excerpt}</p>
-            )}
-          </article>
+          <Link
+            key={post._id}
+            href={`/blog/${post.slug}`}
+            className="group block cursor-pointer"
+          >
+            <article className="grid grid-cols-[96px_1fr] gap-4 md:grid-cols-[160px_1fr] md:gap-6 p-4 rounded-lg border border-transparent hover:border-gold-300 hover:bg-cream-50 transition-all max-w-2xl">
+              <div className="relative aspect-[3/4] rounded-md bg-cream-100 flex items-center justify-center">
+                <CoverImage
+                  image={post.coverImage ?? null}
+                  imgClassName="h-full w-full object-contain"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-3 text-sm">
+                  <span className="text-gold-600 uppercase tracking-wider text-xs font-semibold">
+                    Blog
+                  </span>
+                  <span className="text-cream-400">•</span>
+                  <DateComponent dateString={post.publicationDate} />
+                </div>
+                <h2 className="text-2xl font-semibold text-accent group-hover:underline transition-colors">
+                  {post.title}
+                </h2>
+                {post.excerpt && (
+                  <p className="mt-1 text-sm text-brown-600 line-clamp-3 group-hover:text-brown-700 transition-colors">
+                    {post.excerpt}
+                  </p>
+                )}
+              </div>
+            </article>
+          </Link>
         ))}
       </div>
     </div>

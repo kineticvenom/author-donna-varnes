@@ -10,20 +10,39 @@ export default async function BooksPage() {
   return (
     <div className="container py-12 lg:py-24 bg-white">
       <h1 className="text-5xl font-bold mb-6">Books</h1>
-      <div className="grid gap-12">
+      <div className="grid gap-8">
         {books.map((book) => (
-          <article key={book._id} className="article-row">
-            <CoverImage image={book.coverImage ?? null} />
-            <div className="article-text">
-              <h2 className="text-3xl font-semibold mt-4">
-                <Link href={`/books/${book.slug}`}>{book.title}</Link>
-              </h2>
-              <DateComponent dateString={book.publicationDate} />
-              {book.description && (
-                <p className="mt-2 text-brown-600">{book.description}</p>
-              )}
-            </div>
-          </article>
+          <Link
+            key={book._id}
+            href={`/books/${book.slug}`}
+            className="group block cursor-pointer"
+          >
+            <article className="grid grid-cols-[96px_1fr] gap-4 md:grid-cols-[160px_1fr] md:gap-6 p-4 rounded-lg border border-transparent hover:border-gold-300 hover:bg-cream-50 transition-all">
+              <div className="relative aspect-[3/4] rounded-md bg-cream-100 flex items-center justify-center">
+                <CoverImage
+                  image={book.coverImage ?? null}
+                  imgClassName="h-full w-full object-contain"
+                />
+              </div>
+              <div className="flex flex-col gap-2 article-text">
+                <div className="flex items-center gap-3 text-sm">
+                  <span className="text-gold-600 uppercase tracking-wider text-xs font-semibold">
+                    Book
+                  </span>
+                  <span className="text-cream-400">•</span>
+                  <DateComponent dateString={book.publicationDate} />
+                </div>
+                <h2 className="text-2xl font-semibold text-accent group-hover:underline transition-colors">
+                  {book.title}
+                </h2>
+                {book.description && (
+                  <p className="mt-1 text-sm text-brown-600 line-clamp-3 group-hover:text-brown-700 transition-colors">
+                    {book.description}
+                  </p>
+                )}
+              </div>
+            </article>
+          </Link>
         ))}
       </div>
     </div>

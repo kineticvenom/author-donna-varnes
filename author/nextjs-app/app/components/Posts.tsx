@@ -35,38 +35,42 @@ const Post = ({ post }: { post: PostType }) => {
     : `/devotionals/${toSlug(slug)}`;
 
   const description = isBlogPost(post) ? post.excerpt : post.scriptureReference;
-  const category = isBlogPost(post) ? "Blog" : "Devotional";
-  const categoryColor = isBlogPost(post) ? "text-gold-600" : "text-sage-600";
-  const hoverBorder = isBlogPost(post) ? "hover:border-gold-300" : "hover:border-sage-300";
+  const isBlog = isBlogPost(post);
 
   return (
-    <article
+    <Link
       key={_id}
-      className={`group flex max-w-xl flex-col items-start justify-between article-row p-4 rounded-lg border border-transparent ${hoverBorder} hover:bg-cream-50 transition-all`}
+      href={href}
+      className="group block cursor-pointer"
     >
-      <div className="flex items-center gap-3 text-sm">
-        <span className={`${categoryColor} uppercase tracking-wider text-xs font-semibold`}>
-          {category}
-        </span>
-        <span className="text-cream-400">•</span>
-        {publicationDate && <DateComponent dateString={publicationDate} />}
-      </div>
+      <article
+        className={`flex max-w-xl flex-col items-start justify-between article-row p-4 rounded-lg border border-transparent transition-all ${
+          isBlog
+            ? "hover:border-gold-300 hover:bg-cream-50"
+            : "hover:border-sage-300 hover:bg-sage-50"
+        }`}
+      >
+        <div className="flex items-center gap-3 text-sm">
+          <span className={`uppercase tracking-wider text-xs font-semibold ${
+            isBlog ? "text-gold-600" : "text-sage-600"
+          }`}>
+            {isBlog ? "Blog" : "Devotional"}
+          </span>
+          <span className="text-cream-400">•</span>
+          {publicationDate && <DateComponent dateString={publicationDate} />}
+        </div>
 
-      <h3 className="mt-3 text-2xl font-semibold leading-tight">
-        <Link
-          className="text-accent hover:underline transition-colors"
-          href={href}
-        >
+        <h3 className="mt-3 text-2xl font-semibold leading-tight text-accent group-hover:underline transition-colors">
           {title || "Untitled"}
-        </Link>
-      </h3>
+        </h3>
 
-      {description && (
-        <p className="mt-5 text-sm leading-6 text-brown-600 line-clamp-3 group-hover:text-brown-700 transition-colors">
-          {description}
-        </p>
-      )}
-    </article>
+        {description && (
+          <p className="mt-5 text-sm leading-6 text-brown-600 line-clamp-3 group-hover:text-brown-700 transition-colors">
+            {description}
+          </p>
+        )}
+      </article>
+    </Link>
   );
 };
 
