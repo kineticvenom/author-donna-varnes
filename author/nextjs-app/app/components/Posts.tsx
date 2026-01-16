@@ -35,13 +35,18 @@ const Post = ({ post }: { post: PostType }) => {
     : `/devotionals/${toSlug(slug)}`;
 
   const description = isBlogPost(post) ? post.excerpt : post.scriptureReference;
+  const category = isBlogPost(post) ? "Blog" : "Devotional";
 
   return (
     <article
       key={_id}
-      className="group flex max-w-xl flex-col items-start justify-between article-row "
+      className="group flex max-w-xl flex-col items-start justify-between article-row p-4 rounded-lg border border-transparent hover:border-gold-300 hover:bg-cream-50 transition-all"
     >
-      <div className="text-sm text-muted-foreground">
+      <div className="flex items-center gap-3 text-sm">
+        <span className="text-gold-600 uppercase tracking-wider text-xs font-semibold">
+          {category}
+        </span>
+        <span className="text-cream-400">•</span>
         {publicationDate && <DateComponent dateString={publicationDate} />}
       </div>
 

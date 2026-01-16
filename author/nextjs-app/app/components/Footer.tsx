@@ -4,7 +4,9 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-brown-800 text-cream-100">
+    <>
+      <div className="h-1 bg-gradient-to-r from-gold-300 via-gold-500 to-gold-300" />
+      <footer className="bg-brown-800 text-cream-100">
       <div className="container py-12">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-center md:text-left">
@@ -30,5 +32,6 @@ export default function Footer() {
         </div>
       </div>
     </footer>
+    </>
   );
 }

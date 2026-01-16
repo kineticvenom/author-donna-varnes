@@ -58,7 +58,7 @@
 
   /* Card styling for books/posts */
   .content-card {
-    @apply bg-cream-50 border border-cream-300 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow;
+    @apply bg-cream-50 border border-cream-300 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-gold-400 transition-all;
   }
 
   /* Gold accent button */

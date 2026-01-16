@@ -16,7 +16,7 @@ const Book = ({ book }: { book: BookQueryResult }) => {
   return (
     <article
       key={_id}
-      className="group grid grid-cols-[96px_1fr] gap-4 md:grid-cols-[160px_1fr] md:gap-6"
+      className="group grid grid-cols-[96px_1fr] gap-4 md:grid-cols-[160px_1fr] md:gap-6 p-4 rounded-lg border border-transparent hover:border-gold-300 hover:bg-cream-50 transition-all"
     >
       {/* image wrapper for rounded corners / aspect / bg */}
      <div className="relative aspect-[3/4] rounded-md bg-cream-100 flex items-center justify-center">
@@ -27,6 +27,14 @@ const Book = ({ book }: { book: BookQueryResult }) => {
      </div>
 
       <div className="flex flex-col gap-2 article-text">
+        <div className="flex items-center gap-3 text-sm">
+          <span className="text-gold-600 uppercase tracking-wider text-xs font-semibold">
+            Book
+          </span>
+          <span className="text-cream-400">•</span>
+          <DateComponent dateString={publicationDate} />
+        </div>
+
         <h3 className="text-2xl font-semibold leading-tight">
           <Link
             href={`/books/${slug ?? ""}`}
@@ -35,10 +43,6 @@ const Book = ({ book }: { book: BookQueryResult }) => {
             {title}
           </Link>
         </h3>
-
-        <div className="text-sm text-muted-foreground">
-          <DateComponent dateString={publicationDate} />
-        </div>
 
         {description && (
           <p className="mt-1 text-sm text-brown-600 line-clamp-2 md:line-clamp-3 group-hover:text-brown-700 transition-colors">
