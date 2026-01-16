@@ -17,7 +17,7 @@ export default async function Page() {
       <div className="bg-white py-8">
         <Suspense>{await FeaturedBooks()}</Suspense>
       </div>
-      <div className="bg-cream-100 py-8 border-l-4 border-gold-500">
+      <div className="bg-cream-100 py-8 border-l-4 border-sage-500">
         <Suspense>{await AllDevotionals()}</Suspense>
       </div>
       <div className="bg-white py-8 border-l-4 border-gold-300">

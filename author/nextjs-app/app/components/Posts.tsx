@@ -36,14 +36,16 @@ const Post = ({ post }: { post: PostType }) => {
 
   const description = isBlogPost(post) ? post.excerpt : post.scriptureReference;
   const category = isBlogPost(post) ? "Blog" : "Devotional";
+  const categoryColor = isBlogPost(post) ? "text-gold-600" : "text-sage-600";
+  const hoverBorder = isBlogPost(post) ? "hover:border-gold-300" : "hover:border-sage-300";
 
   return (
     <article
       key={_id}
-      className="group flex max-w-xl flex-col items-start justify-between article-row p-4 rounded-lg border border-transparent hover:border-gold-300 hover:bg-cream-50 transition-all"
+      className={`group flex max-w-xl flex-col items-start justify-between article-row p-4 rounded-lg border border-transparent ${hoverBorder} hover:bg-cream-50 transition-all`}
     >
       <div className="flex items-center gap-3 text-sm">
-        <span className="text-gold-600 uppercase tracking-wider text-xs font-semibold">
+        <span className={`${categoryColor} uppercase tracking-wider text-xs font-semibold`}>
           {category}
         </span>
         <span className="text-cream-400">•</span>
