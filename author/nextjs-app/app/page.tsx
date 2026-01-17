@@ -1,9 +1,10 @@
 // app/page.tsx
 import { Suspense } from "react";
 import { sanityFetch } from "@/sanity/lib/live";
-import { settingsQuery } from "@/sanity/lib/queries"; 
+import { settingsQuery } from "@/sanity/lib/queries";
 import { AllBooks, FeaturedBooks } from "./components/Books";
 import { AllDevotionals, AllPosts } from "@/app/components/Posts";
+import Hero from "./components/Hero";
 
 export default async function Page() {
   const result = await sanityFetch({
@@ -14,6 +15,7 @@ export default async function Page() {
 
   return (
     <>
+      <Hero />
       <div className="bg-white py-8">
         <Suspense>{await FeaturedBooks()}</Suspense>
       </div>

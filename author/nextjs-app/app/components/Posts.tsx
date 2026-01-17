@@ -156,7 +156,7 @@ export const AllPosts = async () => {
   if (!data?.length) return <p className="px-4">No posts available.</p>;
 
   return (
-    <Posts heading="From the Blog" subHeading="Thoughts, reflections, and updates">
+    <Posts heading="From the Journey" subHeading="Reflections from the wilderness and beyond">
       {data.map((post) => (
         <Post key={post._id} post={post} />
       ))}
@@ -174,8 +174,8 @@ export const AllDevotionals = async () => {
 
   return (
     <Posts
-      heading="Daily Inspiration"
-      subHeading="Moments of faith and reflection"
+      heading="Where Faith Meets Everyday Life"
+      subHeading="Finding God in the ordinary moments"
     >
       {data.map((post) => (
         <Post key={post._id} post={post} />

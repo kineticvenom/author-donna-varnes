@@ -125,7 +125,7 @@ export const FeaturedBooks = async () => {
   data = [data[randomIndex]];
 
   return (
-    <Books heading="Worth Your Time" subHeading="A story waiting to be discovered">
+    <Books heading="Stories That Remind You God Is Near" subHeading="Faith for life's wilderness seasons">
       {data.map((book) => (
         <Book key={book._id} book={book} />
       ))}
