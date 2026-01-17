@@ -42,7 +42,7 @@ export default async function Header() {
               <li><Link href="/books" className="nav-link">Books</Link></li>
               <li><Link href="/blog" className="nav-link">Blog</Link></li>
               <li><Link href="/devotionals" className="nav-link">Devotions</Link></li>
-              <li><Link href="/about" className="nav-link">About</Link></li>
+              <li><Link href="/about" className="nav-link">Meet Donna</Link></li>
               <li><Link href="/contact" className="nav-link">Contact</Link></li>
             </ul>
           </nav>

@@ -91,7 +91,7 @@ export const MoreBooks = async ({
   if (!data || data.length === 0) return null;
 
   return (
-    <Books heading="More From the Shelf" subHeading="Continue exploring">
+    <Books heading="Explore the Bookshelf" subHeading="Continue your journey">
       {data.map((book) => (
         <Book key={book._id} book={book} />
       ))}
