@@ -106,8 +106,8 @@ export const AllBooks = async () => {
 
   return (
     <Books
-      heading="From My Bookshelf"
-      subHeading="Stories crafted with faith, hope, and heart"
+      heading="Stories of Faith & Wonder"
+      subHeading="Books to encourage your heart and strengthen your faith"
     >
       {data.map((book) => (
         <Book key={book._id} book={book} />

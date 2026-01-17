@@ -9,8 +9,8 @@ export default async function BooksPage() {
 
   return (
     <div className="container py-12 lg:py-24 bg-white">
-      <h1 className="text-5xl font-bold mb-2">From My Bookshelf</h1>
-      <p className="text-lg text-brown-600 mb-8">Stories crafted with faith, hope, and heart</p>
+      <h1 className="text-5xl font-bold mb-2">Stories of Faith & Wonder</h1>
+      <p className="text-lg text-brown-600 mb-8">Books to encourage your heart and strengthen your faith</p>
       <div className="grid gap-8">
         {books.map((book) => (
           <Link
